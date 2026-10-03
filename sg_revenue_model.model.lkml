@@ -11,7 +11,9 @@ persist_with: sg_revenue_model_default_datagroup
 
 explore: bills_v3 {
   label: "Revenue & Billing Analysis"
+}
 
-  join: account {
-  }
+
+explore: account {
+  label: "Revenue & Billing Accounts"
 }
