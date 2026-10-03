@@ -17,3 +17,8 @@ explore: bills_v3 {
 explore: account {
   label: "Revenue & Billing Accounts"
 }
+
+
+explore: consolidate_revenue_view {
+  label: "Revenue & Billing Accounts"
+}
