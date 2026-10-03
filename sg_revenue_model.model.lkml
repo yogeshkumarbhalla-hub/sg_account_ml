@@ -10,15 +10,15 @@ datagroup: sg_revenue_model_default_datagroup {
 persist_with: sg_revenue_model_default_datagroup
 
 explore: bills_v3 {
-  label: "Revenue & Billing Analysis"
+  label: "Revenue & Billing Analysis_old"
 }
 
 
 explore: account {
-  label: "Revenue & Billing Accounts"
+  label: "Revenue & Billing Accounts_old"
 }
 
 
 explore: consolidate_revenue_view {
-  label: "Revenue & Billing Accounts"
+  label: "Revenue & Billing Analysis"
 }
