@@ -13,10 +13,5 @@ explore: bills_v3 {
   label: "Revenue & Billing Analysis"
 
   join: account {
-    type: left_outer
-    relationship: many_to_one
-    sql_on: \({bills_v3.accountid} =\){account.accountid}
-      AND \({bills_v3.si_number} =\){account.si_number}
-      AND \({bills_v3.ba_number} =\){account.ba_number} ;;
   }
 }
