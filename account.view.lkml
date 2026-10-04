@@ -119,3 +119,32 @@ view: account {
     ]
   }
 }
+
+
+
+view: +account {
+  dimension: is_eligible {
+    type: yesno
+    sql: ${TABLE}.ACCOUNT_STATUS IN ('ACTIVE','SUSPENDED','ACTIVE_PENDING') ;;
+    description: "Eligible for billing: ACTIVE, SUSPENDED or ACTIVE_PENDING."
+  }
+  measure: user_base {
+    label: "User Base"  type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;
+  }
+  measure: eligible_accounts {
+    type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [is_eligible: "Yes"]
+  }
+  measure: active_accounts {
+    type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [account.account_status: "ACTIVE"]
+  }
+  measure: suspended_pending_accounts {
+    type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [account.account_status: "SUSPENDED,ACTIVE_PENDING"]
+  }
+  measure: terminated_accounts {
+    type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [account.account_status: "TERMINATED"]
+  }
+  measure: ungenerated_accounts {
+    type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;
+    filters: [is_eligible: "Yes", bills_v3.bill_no: "NULL"]
+  }
+}

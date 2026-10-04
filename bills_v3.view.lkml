@@ -129,3 +129,27 @@ view: bills_v3 {
     ]
   }
 }
+
+
+view: +bills_v3 {
+  measure: total_invoice_generated { type: count_distinct  sql: ${TABLE}.BILL_NO ;; }
+  measure: generated_eligible {
+    type: count_distinct  sql: ${TABLE}.BILL_NO ;;  filters: [account.is_eligible: "Yes"]
+  }
+  measure: generation_rate {
+    type: number  sql: 1.0 * ${generated_eligible} / NULLIF(${account.eligible_accounts},0) ;;
+    value_format: "0.000%"
+  }
+  measure: nontax_amount { type: sum  sql: ${TABLE}.NONTAX_AMOUNT ;;  value_format_name: usd }
+  measure: tax_amount { type: sum  sql: ${TABLE}.TAX_AMOUNT ;;  value_format_name: usd }
+  measure: invoiced_revenue { type: number  sql: ${nontax_amount} + ${tax_amount} ;;  value_format_name: usd }
+  measure: avg_invoice_value {
+    type: number  sql: ${invoiced_revenue} / NULLIF(${total_invoice_generated},0) ;;  value_format_name: usd
+  }
+  measure: projected_revenue {
+    type: number  sql: ${avg_invoice_value} * ${account.eligible_accounts} ;;  value_format_name: usd
+  }
+  measure: revenue_variance { type: number  sql: ${invoiced_revenue} - ${projected_revenue} ;;  value_format_name: usd }
+  measure: total_line_items { type: sum  sql: ${TABLE}."COUNT" ;; }
+  measure: total_quantity { type: sum  sql: ${TABLE}.QUANTITY ;; }
+}
