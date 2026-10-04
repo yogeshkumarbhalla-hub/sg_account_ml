@@ -22,3 +22,7 @@ explore: account {
 explore: consolidate_revenue_view {
   label: "Revenue & Billing Analysis"
 }
+
+explore: billing_revenue_summary {
+  label: "Billing Accuracy & Revenue Summary"
+}
