@@ -17,12 +17,3 @@ explore: bills_v3 {
 explore: account {
   label: "Revenue & Billing Accounts_old"
 }
-
-
-explore: consolidate_revenue_view {
-  label: "Revenue & Billing Analysis"
-}
-
-explore: billing_revenue_summary {
-  label: "Billing Accuracy & Revenue Summary"
-}

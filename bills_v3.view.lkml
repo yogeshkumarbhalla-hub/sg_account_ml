@@ -16,6 +16,7 @@ view: bills_v3 {
             SUM(COUNT) AS COUNTS,
             SUM(QUANTITY) AS QUANTITY
           FROM LEGACY.BILLS_V3
+          WHERE BILL_CREATE_MONTH = '202609'
           GROUP BY
             ACCOUNTID,
             SI_NUMBER,
