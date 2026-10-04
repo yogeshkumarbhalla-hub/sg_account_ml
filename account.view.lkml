@@ -121,30 +121,34 @@ view: account {
 }
 
 
-
 view: +account {
+  dimension: status_norm {
+    label: "Account Status"  type: string
+    sql: UPPER(TRIM(${TABLE}.ACCOUNT_STATUS)) ;;
+  }
   dimension: is_eligible {
     type: yesno
-    sql: ${TABLE}.ACCOUNT_STATUS IN ('ACTIVE','SUSPENDED','ACTIVE_PENDING') ;;
+    sql: UPPER(TRIM(${TABLE}.ACCOUNT_STATUS)) IN ('ACTIVE','SUSPENDED','ACTIVE_PENDING') ;;
     description: "Eligible for billing: ACTIVE, SUSPENDED or ACTIVE_PENDING."
   }
-  measure: user_base {
-    label: "User Base"  type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;
+  dimension: state {
+    label: "State"  type: string
+    description: "Derived from MSISDN area code; unmatched numbers = NATIONAL."
+    sql: CASE
+      WHEN ${TABLE}.MSISDN LIKE '1213%' OR ${TABLE}.MSISDN LIKE '1310%' THEN 'CA'
+      WHEN ${TABLE}.MSISDN LIKE '1212%' OR ${TABLE}.MSISDN LIKE '1718%' THEN 'NY'
+      WHEN ${TABLE}.MSISDN LIKE '1214%' OR ${TABLE}.MSISDN LIKE '1713%' THEN 'TX'
+      WHEN ${TABLE}.MSISDN LIKE '1312%' OR ${TABLE}.MSISDN LIKE '1773%' THEN 'IL'
+      WHEN ${TABLE}.MSISDN LIKE '1305%' OR ${TABLE}.MSISDN LIKE '1407%' THEN 'FL'
+      ELSE 'NATIONAL' END ;;
   }
-  measure: eligible_accounts {
-    type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [is_eligible: "Yes"]
-  }
-  measure: active_accounts {
-    type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [account.account_status: "ACTIVE"]
-  }
-  measure: suspended_pending_accounts {
-    type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [account.account_status: "SUSPENDED,ACTIVE_PENDING"]
-  }
-  measure: terminated_accounts {
-    type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [account.account_status: "TERMINATED"]
-  }
+  measure: user_base { label: "User Base"  type: count_distinct  sql: ${TABLE}.ACCOUNTID ;; }
+  measure: eligible_accounts { label: "Eligible Accounts"  type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [is_eligible: "Yes"] }
+  measure: active_accounts { label: "Active Accounts"  type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [status_norm: "ACTIVE"] }
+  measure: suspended_pending_accounts { label: "Suspended / Pending"  type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [status_norm: "SUSPENDED,ACTIVE_PENDING"] }
+  measure: terminated_accounts { label: "Terminated Accounts"  type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;  filters: [status_norm: "TERMINATED"] }
   measure: ungenerated_accounts {
-    type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;
+    label: "Ungenerated Accounts"  type: count_distinct  sql: ${TABLE}.ACCOUNTID ;;
     filters: [is_eligible: "Yes", bills_v3.bill_no: "NULL"]
   }
 }

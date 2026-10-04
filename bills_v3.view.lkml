@@ -131,25 +131,42 @@ view: bills_v3 {
 }
 
 
+
 view: +bills_v3 {
-  measure: total_invoice_generated { type: count_distinct  sql: ${TABLE}.BILL_NO ;; }
+  dimension: revenue_category {
+    label: "Revenue Category"  type: string
+    description: "Groups REVENUE_TYPE. Adjust the lists below to your catalog."
+    sql: CASE
+      WHEN UPPER(TRIM(${TABLE}.REVENUE_TYPE)) IN ('BASE PLAN SUBSCRIPTION','PLUS OPTIONS') THEN 'Recurring Plan Charges'
+      WHEN UPPER(TRIM(${TABLE}.REVENUE_TYPE)) = 'USAGE' THEN 'Usage / PAYG'
+      WHEN UPPER(TRIM(${TABLE}.REVENUE_TYPE)) IN ('BOOST OPTIONS','AUTO-BOOSTS') THEN 'Add-on Charges'
+      WHEN UPPER(TRIM(${TABLE}.REVENUE_TYPE)) = 'ONE-TIME CHARGES' THEN 'One-time Charges'
+      ELSE 'Other' END ;;
+  }
+  measure: total_invoice_generated { label: "Invoices Generated"  type: count_distinct  sql: ${TABLE}.BILL_NO ;; }
   measure: generated_eligible {
-    type: count_distinct  sql: ${TABLE}.BILL_NO ;;  filters: [account.is_eligible: "Yes"]
+    label: "Generated (Eligible)"  type: count_distinct  sql: ${TABLE}.BILL_NO ;;  filters: [account.is_eligible: "Yes"]
   }
   measure: generation_rate {
-    type: number  sql: 1.0 * ${generated_eligible} / NULLIF(${account.eligible_accounts},0) ;;
-    value_format: "0.000%"
+    label: "Generation Rate"
+    type: number  sql: 1.0 * ${generated_eligible} / NULLIF(${account.eligible_accounts},0) ;;  value_format: "0.000%"
   }
-  measure: nontax_amount { type: sum  sql: ${TABLE}.NONTAX_AMOUNT ;;  value_format_name: usd }
-  measure: tax_amount { type: sum  sql: ${TABLE}.TAX_AMOUNT ;;  value_format_name: usd }
-  measure: invoiced_revenue { type: number  sql: ${nontax_amount} + ${tax_amount} ;;  value_format_name: usd }
+  measure: generation_result {
+    label: "Result (AC 2.4-01)"
+    type: string  sql: CASE WHEN ${generation_rate} >= 0.9995 THEN 'PASS' ELSE 'FAIL' END ;;
+  }
+  measure: nontax_amount { label: "Non-Tax Amount"  type: sum  sql: ${TABLE}.NONTAX_AMOUNT ;;  value_format: "$#,##0.00" }
+  measure: tax_amount { label: "Tax Amount"  type: sum  sql: ${TABLE}.TAX_AMOUNT ;;  value_format: "$#,##0.00" }
+  measure: invoiced_revenue { label: "Total Invoiced"  type: number  sql: ${nontax_amount} + ${tax_amount} ;;  value_format: "$#,##0.00" }
   measure: avg_invoice_value {
-    type: number  sql: ${invoiced_revenue} / NULLIF(${total_invoice_generated},0) ;;  value_format_name: usd
+    label: "Average Invoice Value"
+    type: number  sql: ${invoiced_revenue} / NULLIF(${total_invoice_generated},0) ;;  value_format: "$#,##0.00"
   }
   measure: projected_revenue {
-    type: number  sql: ${avg_invoice_value} * ${account.eligible_accounts} ;;  value_format_name: usd
+    label: "Projected Revenue"
+    type: number  sql: ${avg_invoice_value} * ${account.eligible_accounts} ;;  value_format: "$#,##0.00"
   }
-  measure: revenue_variance { type: number  sql: ${invoiced_revenue} - ${projected_revenue} ;;  value_format_name: usd }
-  measure: total_line_items { type: sum  sql: ${TABLE}."COUNT" ;; }
-  measure: total_quantity { type: sum  sql: ${TABLE}.QUANTITY ;; }
+  measure: revenue_variance { label: "Revenue Variance"  type: number  sql: ${invoiced_revenue} - ${projected_revenue} ;;  value_format: "$#,##0.00" }
+  measure: total_line_items { label: "Line Items"  type: sum  sql: ${TABLE}.COUNT ;;  value_format: "#,##0" }
+  measure: total_quantity { label: "Total Quantity"  type: sum  sql: ${TABLE}.QUANTITY ;;  value_format: "#,##0" }
 }
