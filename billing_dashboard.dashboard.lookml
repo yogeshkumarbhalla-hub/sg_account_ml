@@ -3,6 +3,51 @@
   layout: newspaper
   preferred_viewer: dashboards-next
   description: "September 2026 (202609)"
+  filters:
+  - name: Account Status
+    title: Account Status
+    type: field_filter
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: advanced
+      display: popover
+    model: billing
+    explore: revenue_billing
+    field: account.status_norm
+  - name: State
+    title: State
+    type: field_filter
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: advanced
+      display: popover
+    model: billing
+    explore: revenue_billing
+    field: account.state
+  - name: Rate Plan
+    title: Rate Plan
+    type: field_filter
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: advanced
+      display: popover
+    model: billing
+    explore: revenue_billing
+    field: account.currentplan_name
+  - name: Port Type
+    title: Port Type
+    type: field_filter
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: advanced
+      display: popover
+    model: billing
+    explore: revenue_billing
+    field: account.number_port_type
   elements:
   - name: hdr
     type: text
@@ -36,6 +81,11 @@
     note_state: expanded
     note_display: below
     note_text: "Generated invoices (eligible accounts) / eligible accounts"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 4
     col: 0
     width: 6
@@ -64,6 +114,11 @@
     note_state: expanded
     note_display: below
     note_text: "Eligible accounts with BILL_NO IS NULL"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 4
     col: 12
     width: 6
@@ -100,6 +155,11 @@
     note_state: expanded
     note_display: below
     note_text: "All accounts in LEGACY.ACCOUNT"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 9
     col: 0
     width: 6
@@ -120,6 +180,11 @@
     note_state: expanded
     note_display: below
     note_text: "ACCOUNT_STATUS = ACTIVE"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 9
     col: 6
     width: 6
@@ -140,6 +205,11 @@
     note_state: expanded
     note_display: below
     note_text: "SUSPENDED + ACTIVE_PENDING (billing-eligible)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 9
     col: 12
     width: 6
@@ -160,6 +230,11 @@
     note_state: expanded
     note_display: below
     note_text: "ACCOUNT_STATUS = TERMINATED (not billed)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 9
     col: 18
     width: 6
@@ -212,6 +287,11 @@
     note_state: expanded
     note_display: below
     note_text: "PASS when generation rate is at least 99.95% (AC 2.4-01). Accuracy (AC 2.4-02): DISABLED"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 14
     col: 0
     width: 10
@@ -231,6 +311,11 @@
     color_application:
       collection_id: legacy
       palette_id: looker_classic
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 14
     col: 10
     width: 7
@@ -266,6 +351,11 @@
     series_colors: {account.ungenerated_accounts: "#d98200"}
     x_axis_scale: auto
     y_axis_combined: true
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 20
     col: 0
     width: 9
@@ -287,6 +377,11 @@
     color_application:
       collection_id: legacy
       palette_id: looker_classic
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 20
     col: 9
     width: 9
@@ -307,6 +402,11 @@
     note_state: expanded
     note_display: below
     note_text: "Ungenerated accounts x Average Invoice Value (estimated unbilled revenue)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 20
     col: 18
     width: 6
@@ -343,6 +443,11 @@
     show_sql_query_menu_options: false
     show_totals: false
     show_row_totals: false
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 28
     col: 0
     width: 24

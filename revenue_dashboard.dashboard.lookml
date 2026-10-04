@@ -3,6 +3,74 @@
   layout: newspaper
   preferred_viewer: dashboards-next
   description: "September 2026 (202609)"
+  filters:
+  - name: Account Status
+    title: Account Status
+    type: field_filter
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: advanced
+      display: popover
+    model: billing
+    explore: revenue_billing
+    field: account.status_norm
+  - name: State
+    title: State
+    type: field_filter
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: advanced
+      display: popover
+    model: billing
+    explore: revenue_billing
+    field: account.state
+  - name: Rate Plan
+    title: Rate Plan
+    type: field_filter
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: advanced
+      display: popover
+    model: billing
+    explore: revenue_billing
+    field: account.currentplan_name
+  - name: Port Type
+    title: Port Type
+    type: field_filter
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: advanced
+      display: popover
+    model: billing
+    explore: revenue_billing
+    field: account.number_port_type
+  - name: Revenue Category
+    title: Revenue Category
+    type: field_filter
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: advanced
+      display: popover
+    model: billing
+    explore: revenue_billing
+    field: bills_v3.revenue_category
+  - name: Product
+    title: Product
+    type: field_filter
+    default_value: "-NULL"
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: advanced
+      display: popover
+    model: billing
+    explore: revenue_billing
+    field: bills_v3.product
   elements:
   - name: hdr
     type: text
@@ -36,6 +104,11 @@
     note_state: expanded
     note_display: below
     note_text: "Average Invoice Value x eligible accounts"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 4
     col: 0
     width: 6
@@ -56,6 +129,13 @@
     note_state: expanded
     note_display: below
     note_text: "SUM(NONTAX_AMOUNT + TAX_AMOUNT)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
     row: 4
     col: 6
     width: 6
@@ -76,6 +156,11 @@
     note_state: expanded
     note_display: below
     note_text: "Invoiced Revenue - Projected Revenue (negative = shortfall)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
     row: 4
     col: 12
     width: 6
@@ -96,6 +181,13 @@
     note_state: expanded
     note_display: below
     note_text: "Invoiced Revenue / total unique invoices (distinct BILL_NO)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
     row: 4
     col: 18
     width: 6
@@ -126,6 +218,13 @@
     note_state: expanded
     note_display: below
     note_text: "Non-tax amount by revenue category (see calculation table below)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
     row: 9
     col: 0
     width: 8
@@ -136,8 +235,6 @@
     explore: revenue_billing
     type: looker_bar
     fields: [bills_v3.product, bills_v3.invoiced_revenue]
-    filters:
-      bills_v3.product: "-NULL"
     sorts: [bills_v3.invoiced_revenue desc]
     limit: 10
     x_axis_gridlines: false
@@ -153,6 +250,13 @@
     series_colors: {bills_v3.invoiced_revenue: "#5b3df5"}
     x_axis_scale: auto
     y_axis_combined: true
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
     row: 9
     col: 8
     width: 8
@@ -181,6 +285,13 @@
     note_state: expanded
     note_display: below
     note_text: "State derived from MSISDN area code; unmatched numbers fall under NATIONAL"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
     row: 9
     col: 16
     width: 8
@@ -216,6 +327,13 @@
       value_format_name: percent_1
       _kind_hint: measure
       _type_hint: number
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
     row: 17
     col: 0
     width: 12
@@ -236,6 +354,13 @@
     note_state: expanded
     note_display: below
     note_text: "SUM(TAX_AMOUNT)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
     row: 17
     col: 12
     width: 6
@@ -256,6 +381,13 @@
     note_state: expanded
     note_display: below
     note_text: "Unique invoices: COUNT(DISTINCT BILL_NO)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
     row: 17
     col: 18
     width: 6
@@ -274,8 +406,6 @@
     explore: revenue_billing
     type: looker_grid
     fields: [bills_v3.product, bills_v3.revenue_type, bills_v3.total_line_items, bills_v3.total_quantity, bills_v3.nontax_amount, bills_v3.tax_amount, bills_v3.invoiced_revenue]
-    filters:
-      bills_v3.product: "-NULL"
     sorts: [bills_v3.invoiced_revenue desc]
     limit: 500
     show_view_names: false
@@ -295,6 +425,13 @@
     series_cell_visualizations:
       bills_v3.invoiced_revenue:
         is_active: true
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
     row: 25
     col: 0
     width: 24
