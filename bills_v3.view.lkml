@@ -131,7 +131,6 @@ view: bills_v3 {
 }
 
 
-
 view: +bills_v3 {
   dimension: revenue_category {
     label: "Revenue Category"  type: string
@@ -143,7 +142,7 @@ view: +bills_v3 {
       WHEN UPPER(TRIM(${TABLE}.REVENUE_TYPE)) = 'ONE-TIME CHARGES' THEN 'One-time Charges'
       ELSE 'Other' END ;;
   }
-  measure: total_invoice_generated { label: "Invoices Generated"  type: count_distinct  sql: ${TABLE}.BILL_NO ;; }
+  measure: total_invoice_generated { label: "Total Invoices"  description: "Unique invoices: COUNT(DISTINCT BILL_NO)."  type: count_distinct  sql: ${TABLE}.BILL_NO ;; }
   measure: generated_eligible {
     label: "Generated (Eligible)"  type: count_distinct  sql: ${TABLE}.BILL_NO ;;  filters: [account.is_eligible: "Yes"]
   }
@@ -154,6 +153,11 @@ view: +bills_v3 {
   measure: generation_result {
     label: "Result (AC 2.4-01)"
     type: string  sql: CASE WHEN ${generation_rate} >= 0.9995 THEN 'PASS' ELSE 'FAIL' END ;;
+  }
+  measure: revenue_at_risk {
+    label: "Revenue at Risk"  type: number  value_format: "$#,##0"
+    description: "Ungenerated accounts x average invoice value."
+    sql: ${account.ungenerated_accounts} * ${avg_invoice_value} ;;
   }
   measure: nontax_amount { label: "Non-Tax Amount"  type: sum  sql: ${TABLE}.NONTAX_AMOUNT ;;  value_format: "$#,##0.00" }
   measure: tax_amount { label: "Tax Amount"  type: sum  sql: ${TABLE}.TAX_AMOUNT ;;  value_format: "$#,##0.00" }
@@ -167,6 +171,6 @@ view: +bills_v3 {
     type: number  sql: ${avg_invoice_value} * ${account.eligible_accounts} ;;  value_format: "$#,##0.00"
   }
   measure: revenue_variance { label: "Revenue Variance"  type: number  sql: ${invoiced_revenue} - ${projected_revenue} ;;  value_format: "$#,##0.00" }
-  measure: total_line_items { label: "Line Items"  type: sum  sql: ${TABLE}.COUNT ;;  value_format: "#,##0" }
+  measure: total_line_items { label: "Line Items"  type: sum  sql: ${TABLE}.COUNTS ;;  value_format: "#,##0" }
   measure: total_quantity { label: "Total Quantity"  type: sum  sql: ${TABLE}.QUANTITY ;;  value_format: "#,##0" }
 }

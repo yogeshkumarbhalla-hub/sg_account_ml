@@ -268,7 +268,7 @@
     y_axis_combined: true
     row: 20
     col: 0
-    width: 12
+    width: 9
     height: 7
   - name: ung_port
     title: "Ungenerated Accounts by Port Type"
@@ -288,8 +288,28 @@
       collection_id: legacy
       palette_id: looker_classic
     row: 20
-    col: 12
-    width: 12
+    col: 9
+    width: 9
+    height: 7
+  - name: risk
+    title: "Revenue at Risk"
+    model: billing
+    explore: revenue_billing
+    type: single_value
+    fields: [bills_v3.revenue_at_risk]
+    show_single_value_title: true
+    show_comparison: false
+    custom_color_enabled: true
+    custom_color: "#e5399e"
+    enable_conditional_formatting: false
+    text_color: "#e5399e"
+    value_format: '$#,##0'
+    note_state: expanded
+    note_display: below
+    note_text: "Ungenerated accounts x Average Invoice Value (estimated unbilled revenue)"
+    row: 20
+    col: 18
+    width: 6
     height: 7
   - name: s4
     type: text
@@ -330,7 +350,7 @@
   - name: calc
     type: text
     title_text: ""
-    body_text: '<div style="font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:#6b7794;font-weight:700;border-bottom:1px solid #e4e9f2;padding-bottom:4px">How each field is calculated</div><table style="width:100%;border-collapse:collapse"><tr><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Field</th><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Calculation</th><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Source</th></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Invoice Generation Rate</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">COUNT(DISTINCT BILL_NO) for eligible accounts / eligible accounts</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">BILLS_V3, ACCOUNT</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Eligible accounts</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Status ACTIVE, SUSPENDED or ACTIVE_PENDING</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">ACCOUNT.ACCOUNT_STATUS</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Ungenerated Accounts</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Eligible accounts with no invoice for 202609 (LEFT JOIN, BILL_NO IS NULL)</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">ACCOUNT, BILLS_V3</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Active / Suspended-Pending / Terminated</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">COUNT(DISTINCT ACCOUNTID) by ACCOUNT_STATUS</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">ACCOUNT</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Generation (AC 2.4-01)</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">PASS when generation rate is at least 99.95%</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Derived</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Accuracy, Duration, Materiality</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Disabled - need EXPECTED_AMOUNT / RUN_TIMESTAMPS</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Not in schema</td></tr></table>'
+    body_text: '<div style="font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:#6b7794;font-weight:700;border-bottom:1px solid #e4e9f2;padding-bottom:4px">How each field is calculated</div><table style="width:100%;border-collapse:collapse"><tr><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Field</th><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Calculation</th><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Source</th></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Invoice Generation Rate</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Unique BILL_NO (COUNT DISTINCT) for eligible accounts / eligible accounts</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">BILLS_V3, ACCOUNT</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Eligible accounts</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Status ACTIVE, SUSPENDED or ACTIVE_PENDING</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">ACCOUNT.ACCOUNT_STATUS</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Ungenerated Accounts</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Eligible accounts with no invoice for 202609 (LEFT JOIN, BILL_NO IS NULL)</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">ACCOUNT, BILLS_V3</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Active / Suspended-Pending / Terminated</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">COUNT(DISTINCT ACCOUNTID) by ACCOUNT_STATUS</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">ACCOUNT</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Revenue at Risk</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Ungenerated accounts x Average Invoice Value</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Derived</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Generation (AC 2.4-01)</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">PASS when generation rate is at least 99.95%</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Derived</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Accuracy, Duration, Materiality</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Disabled - need EXPECTED_AMOUNT / RUN_TIMESTAMPS</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Not in schema</td></tr></table>'
     row: 38
     col: 0
     width: 24

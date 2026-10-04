@@ -95,7 +95,7 @@
     value_format: '$#,##0.00'
     note_state: expanded
     note_display: below
-    note_text: "Invoiced Revenue / distinct invoices generated"
+    note_text: "Invoiced Revenue / total unique invoices (distinct BILL_NO)"
     row: 4
     col: 18
     width: 6
@@ -241,7 +241,7 @@
     width: 6
     height: 4
   - name: inv_kpi
-    title: "Invoices Generated"
+    title: "Total Invoices"
     model: billing
     explore: revenue_billing
     type: single_value
@@ -255,7 +255,7 @@
     value_format: '#,##0'
     note_state: expanded
     note_display: below
-    note_text: "COUNT(DISTINCT BILL_NO)"
+    note_text: "Unique invoices: COUNT(DISTINCT BILL_NO)"
     row: 17
     col: 18
     width: 6
