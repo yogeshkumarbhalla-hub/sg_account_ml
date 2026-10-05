@@ -161,7 +161,21 @@ view: +bills_v3 {
   }
   measure: nontax_amount { label: "Non-Tax Amount"  type: sum  sql: ${TABLE}.NONTAX_AMOUNT ;;  value_format: "$#,##0.00" }
   measure: tax_amount { label: "Tax Amount"  type: sum  sql: ${TABLE}.TAX_AMOUNT ;;  value_format: "$#,##0.00" }
-  measure: invoiced_revenue { label: "Total Invoiced"  type: number  sql: ${nontax_amount} + ${tax_amount} ;;  value_format: "$#,##0.00" }
+  measure: total_revenue {
+    label: "Total Revenue"  type: sum  value_format: "$#,##0.00"
+    description: "Line amounts (non-tax + tax) where PRODUCT does not contain 'waiver'."
+    sql: CASE WHEN UPPER(COALESCE(${TABLE}.PRODUCT,'')) NOT LIKE '%WAIVER%' THEN (${TABLE}.NONTAX_AMOUNT + ${TABLE}.TAX_AMOUNT) ELSE 0 END ;;
+  }
+  measure: waivers {
+    label: "Waivers"  type: sum  value_format: "$#,##0.00"
+    description: "Line amounts where PRODUCT contains 'waiver', always shown as a negative number."
+    sql: CASE WHEN UPPER(COALESCE(${TABLE}.PRODUCT,'')) LIKE '%WAIVER%' THEN -ABS(${TABLE}.NONTAX_AMOUNT + ${TABLE}.TAX_AMOUNT) ELSE 0 END ;;
+  }
+  measure: invoiced_revenue {
+    label: "Invoice Revenue"  type: number  value_format: "$#,##0.00"
+    description: "Total Revenue - Waivers (waivers are negative, so Total + Waivers)."
+    sql: ${total_revenue} + ${waivers} ;;
+  }
   measure: avg_invoice_value {
     label: "Average Invoice Value"
     type: number  sql: ${invoiced_revenue} / NULLIF(${total_invoice_generated},0) ;;  value_format: "$#,##0.00"

@@ -114,7 +114,7 @@
     width: 6
     height: 4
   - name: invoiced
-    title: "Invoiced Revenue"
+    title: "Invoice Revenue"
     model: billing
     explore: revenue_billing
     type: single_value
@@ -128,7 +128,7 @@
     value_format: '$#,##0'
     note_state: expanded
     note_display: below
-    note_text: "SUM(NONTAX_AMOUNT + TAX_AMOUNT)"
+    note_text: "Total Revenue - Waivers"
     listen:
       Account Status: account.status_norm
       State: account.state
@@ -192,11 +192,119 @@
     col: 18
     width: 6
     height: 4
+  - name: totrev
+    title: "Total Revenue"
+    model: billing
+    explore: revenue_billing
+    type: single_value
+    fields: [bills_v3.total_revenue]
+    show_single_value_title: true
+    show_comparison: false
+    custom_color_enabled: true
+    custom_color: "#0e9f57"
+    enable_conditional_formatting: false
+    text_color: "#0e9f57"
+    value_format: '$#,##0'
+    note_state: expanded
+    note_display: below
+    note_text: "Line amounts where PRODUCT does not contain waiver"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
+    row: 8
+    col: 0
+    width: 6
+    height: 4
+  - name: waiv
+    title: "Waivers"
+    model: billing
+    explore: revenue_billing
+    type: single_value
+    fields: [bills_v3.waivers]
+    show_single_value_title: true
+    show_comparison: false
+    custom_color_enabled: true
+    custom_color: "#d98200"
+    enable_conditional_formatting: false
+    text_color: "#d98200"
+    value_format: '$#,##0'
+    note_state: expanded
+    note_display: below
+    note_text: "Line amounts where PRODUCT contains waiver (shown negative)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
+    row: 8
+    col: 6
+    width: 6
+    height: 4
+  - name: tax_kpi
+    title: "Taxes & Fees"
+    model: billing
+    explore: revenue_billing
+    type: single_value
+    fields: [bills_v3.tax_amount]
+    show_single_value_title: true
+    show_comparison: false
+    custom_color_enabled: true
+    custom_color: "#e5399e"
+    enable_conditional_formatting: false
+    text_color: "#e5399e"
+    value_format: '$#,##0'
+    note_state: expanded
+    note_display: below
+    note_text: "SUM(TAX_AMOUNT)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
+    row: 8
+    col: 12
+    width: 6
+    height: 4
+  - name: inv_kpi
+    title: "Total Invoices"
+    model: billing
+    explore: revenue_billing
+    type: single_value
+    fields: [bills_v3.total_invoice_generated]
+    show_single_value_title: true
+    show_comparison: false
+    custom_color_enabled: true
+    custom_color: "#5b3df5"
+    enable_conditional_formatting: false
+    text_color: "#5b3df5"
+    value_format: '#,##0'
+    note_state: expanded
+    note_display: below
+    note_text: "Unique invoices: COUNT(DISTINCT BILL_NO)"
+    listen:
+      Account Status: account.status_norm
+      State: account.state
+      Rate Plan: account.currentplan_name
+      Port Type: account.number_port_type
+      Revenue Category: bills_v3.revenue_category
+      Product: bills_v3.product
+    row: 8
+    col: 18
+    width: 6
+    height: 4
   - name: s2
     type: text
     title_text: ""
     body_text: '<div style="font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:#6b7794;font-weight:700;border-bottom:1px solid #e4e9f2;padding-bottom:4px">Where the revenue comes from</div>'
-    row: 8
+    row: 12
     col: 0
     width: 24
     height: 1
@@ -225,7 +333,7 @@
       Port Type: account.number_port_type
       Revenue Category: bills_v3.revenue_category
       Product: bills_v3.product
-    row: 9
+    row: 13
     col: 0
     width: 8
     height: 8
@@ -257,7 +365,7 @@
       Port Type: account.number_port_type
       Revenue Category: bills_v3.revenue_category
       Product: bills_v3.product
-    row: 9
+    row: 13
     col: 8
     width: 8
     height: 8
@@ -292,7 +400,7 @@
       Port Type: account.number_port_type
       Revenue Category: bills_v3.revenue_category
       Product: bills_v3.product
-    row: 9
+    row: 13
     col: 16
     width: 8
     height: 8
@@ -334,26 +442,33 @@
       Port Type: account.number_port_type
       Revenue Category: bills_v3.revenue_category
       Product: bills_v3.product
-    row: 17
+    row: 21
     col: 0
     width: 12
     height: 7
-  - name: tax_kpi
-    title: "Taxes & Fees"
+  - name: waiver_prod
+    title: "Top 10 Products by Waivers"
     model: billing
     explore: revenue_billing
-    type: single_value
-    fields: [bills_v3.tax_amount]
-    show_single_value_title: true
-    show_comparison: false
-    custom_color_enabled: true
-    custom_color: "#e5399e"
-    enable_conditional_formatting: false
-    text_color: "#e5399e"
-    value_format: '$#,##0'
-    note_state: expanded
-    note_display: below
-    note_text: "SUM(TAX_AMOUNT)"
+    type: looker_bar
+    fields: [bills_v3.product, bills_v3.waivers]
+    filters:
+      bills_v3.waivers: "<0"
+    sorts: [bills_v3.waivers asc]
+    limit: 10
+    x_axis_gridlines: false
+    y_axis_gridlines: true
+    show_view_names: false
+    show_y_axis_labels: true
+    show_x_axis_label: false
+    show_y_axis_ticks: true
+    show_value_labels: true
+    label_density: 25
+    legend_position: center
+    ordering: none
+    series_colors: {bills_v3.waivers: "#d98200"}
+    x_axis_scale: auto
+    y_axis_combined: true
     listen:
       Account Status: account.status_norm
       State: account.state
@@ -361,42 +476,15 @@
       Port Type: account.number_port_type
       Revenue Category: bills_v3.revenue_category
       Product: bills_v3.product
-    row: 17
+    row: 21
     col: 12
-    width: 6
-    height: 4
-  - name: inv_kpi
-    title: "Total Invoices"
-    model: billing
-    explore: revenue_billing
-    type: single_value
-    fields: [bills_v3.total_invoice_generated]
-    show_single_value_title: true
-    show_comparison: false
-    custom_color_enabled: true
-    custom_color: "#5b3df5"
-    enable_conditional_formatting: false
-    text_color: "#5b3df5"
-    value_format: '#,##0'
-    note_state: expanded
-    note_display: below
-    note_text: "Unique invoices: COUNT(DISTINCT BILL_NO)"
-    listen:
-      Account Status: account.status_norm
-      State: account.state
-      Rate Plan: account.currentplan_name
-      Port Type: account.number_port_type
-      Revenue Category: bills_v3.revenue_category
-      Product: bills_v3.product
-    row: 17
-    col: 18
-    width: 6
-    height: 4
+    width: 12
+    height: 7
   - name: s3
     type: text
     title_text: ""
     body_text: '<div style="font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:#6b7794;font-weight:700;border-bottom:1px solid #e4e9f2;padding-bottom:4px">Product revenue detail</div>'
-    row: 24
+    row: 28
     col: 0
     width: 24
     height: 1
@@ -432,15 +520,15 @@
       Port Type: account.number_port_type
       Revenue Category: bills_v3.revenue_category
       Product: bills_v3.product
-    row: 25
+    row: 29
     col: 0
     width: 24
     height: 10
   - name: calc
     type: text
     title_text: ""
-    body_text: '<div style="font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:#6b7794;font-weight:700;border-bottom:1px solid #e4e9f2;padding-bottom:4px">How each field is calculated</div><table style="width:100%;border-collapse:collapse"><tr><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Field</th><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Calculation</th><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Source</th></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Invoiced Revenue</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">SUM(NONTAX_AMOUNT + TAX_AMOUNT), cycle 202609</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">LEGACY.BILLS_V3</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Average Invoice Value</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Invoiced Revenue / COUNT(DISTINCT BILL_NO)</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">BILLS_V3</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Projected Revenue</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Average Invoice Value x eligible accounts</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Derived</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Revenue Variance</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Invoiced Revenue - Projected Revenue</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Derived</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Revenue category</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">REVENUE_TYPE grouped: Base Plan / Plus = Recurring; usage = Usage; Boost / Auto-Boosts = Add-on</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">BILLS_V3</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Taxes &amp; Fees</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">SUM(TAX_AMOUNT)</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">BILLS_V3</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Tax by state</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Tax grouped by state derived from MSISDN area code</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">ACCOUNT.MSISDN</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Share %</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Category non-tax / total non-tax</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Derived</td></tr></table>'
-    row: 35
+    body_text: '<div style="font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:#6b7794;font-weight:700;border-bottom:1px solid #e4e9f2;padding-bottom:4px">How each field is calculated</div><table style="width:100%;border-collapse:collapse"><tr><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Field</th><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Calculation</th><th style="text-align:left;padding:7px;color:#6b7794;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e4e9f2">Source</th></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Total Revenue</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Sum of NONTAX_AMOUNT + TAX_AMOUNT for lines where PRODUCT does not contain the word waiver</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">LEGACY.BILLS_V3</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Waivers</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Sum of NONTAX_AMOUNT + TAX_AMOUNT for lines where PRODUCT contains the word waiver (case-insensitive), shown as a negative number</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">BILLS_V3</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Invoice Revenue</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Total Revenue - Waivers (waivers are negative, so this is Total + Waivers)</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Derived</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Average Invoice Value</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Invoiced Revenue / COUNT(DISTINCT BILL_NO)</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">BILLS_V3</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Projected Revenue</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Average Invoice Value x eligible accounts</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Derived</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Revenue Variance</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Invoiced Revenue - Projected Revenue</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Derived</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Revenue category</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">REVENUE_TYPE grouped: Base Plan / Plus = Recurring; usage = Usage; Boost / Auto-Boosts = Add-on</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">BILLS_V3</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Taxes &amp; Fees</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">SUM(TAX_AMOUNT)</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">BILLS_V3</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Tax by state</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Tax grouped by state derived from MSISDN area code</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">ACCOUNT.MSISDN</td></tr><tr><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;font-weight:600">Share %</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Category non-tax / total non-tax</td><td style="padding:7px;border-bottom:1px solid #eef1f7;font-size:12.5px;">Derived</td></tr></table>'
+    row: 39
     col: 0
     width: 24
-    height: 8
+    height: 9
