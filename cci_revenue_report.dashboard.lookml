@@ -35,7 +35,7 @@
     width: 24
     height: 2
 
-  # --- ROW 1: TOP 6 KPI TILES ---
+  # --- ROW 1: REVENUE KPIS ---
 
   - name: r_total_invoices
     type: single_value
@@ -46,14 +46,12 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    custom_color_enabled: true
-    custom_color: "#5b3df5"
     html: |
-      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+      <div style="font-family:'Segoe UI',sans-serif; padding:14px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">TOTAL INVOICES</div>
-        <div style="font-size:28px; font-weight:700; color:#5b3df5; margin:6px 0;">{{ rendered_value }}</div>
-        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">COUNT(DISTINCT BILL_NO)</div>
-        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +2,995 (+3.1%) vs last month</div>
+        <div style="font-size:28px; font-weight:700; color:#5b3df5; margin:4px 0;">{{ rendered_value }}</div>
+        <div style="font-size:11.5px; color:#6b7794;">COUNT(DISTINCT BILL_NO)</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57; margin-top:4px;">▲ +2,995 (+3.1%) vs last month</div>
       </div>
     row: 2
     col: 0
@@ -69,14 +67,12 @@
       Billing Month: cci_product_revenue.billing_month
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: false
-    custom_color_enabled: true
-    custom_color: "#0e9f57"
     html: |
-      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+      <div style="font-family:'Segoe UI',sans-serif; padding:14px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">TOTAL REVENUE</div>
-        <div style="font-size:28px; font-weight:700; color:#0e9f57; margin:6px 0;">{{ rendered_value }}</div>
-        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Product does not contain waiver</div>
-        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +$0.20M (+3.1%) vs last month</div>
+        <div style="font-size:28px; font-weight:700; color:#0e9f57; margin:4px 0;">{{ rendered_value }}</div>
+        <div style="font-size:11.5px; color:#6b7794;">Product does not contain waiver</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57; margin-top:4px;">▲ +$0.20M (+3.1%) vs last month</div>
       </div>
     row: 2
     col: 4
@@ -92,14 +88,12 @@
       Billing Month: cci_product_revenue.billing_month
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: false
-    custom_color_enabled: true
-    custom_color: "#d98200"
     html: |
-      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+      <div style="font-family:'Segoe UI',sans-serif; padding:14px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">WAIVERS</div>
-        <div style="font-size:28px; font-weight:700; color:#d98200; margin:6px 0;">{{ rendered_value }}</div>
-        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Product contains waiver (negative)</div>
-        <div style="font-size:11.5px; font-weight:600; color:#6b7794;">▼ -$0.01M (-3.1%) vs last month</div>
+        <div style="font-size:28px; font-weight:700; color:#d98200; margin:4px 0;">{{ rendered_value }}</div>
+        <div style="font-size:11.5px; color:#6b7794;">Product contains waiver (negative)</div>
+        <div style="font-size:11.5px; font-weight:600; color:#6b7794; margin-top:4px;">▼ -$0.01M (-3.1%) vs last month</div>
       </div>
     row: 2
     col: 8
@@ -115,14 +109,12 @@
       Billing Month: cci_product_revenue.billing_month
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: false
-    custom_color_enabled: true
-    custom_color: "#5b3df5"
     html: |
-      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+      <div style="font-family:'Segoe UI',sans-serif; padding:14px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">INVOICE REVENUE</div>
-        <div style="font-size:28px; font-weight:700; color:#5b3df5; margin:6px 0;">{{ rendered_value }}</div>
-        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Total Revenue - Waivers</div>
-        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +$0.19M (+3.1%) vs last month</div>
+        <div style="font-size:28px; font-weight:700; color:#5b3df5; margin:4px 0;">{{ rendered_value }}</div>
+        <div style="font-size:11.5px; color:#6b7794;">Total Revenue - Waivers</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57; margin-top:4px;">▲ +$0.19M (+3.1%) vs last month</div>
       </div>
     row: 2
     col: 12
@@ -138,14 +130,12 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    custom_color_enabled: true
-    custom_color: "#111a35"
     html: |
-      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+      <div style="font-family:'Segoe UI',sans-serif; padding:14px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">PROJECTED REVENUE</div>
-        <div style="font-size:28px; font-weight:700; color:#111a35; margin:6px 0;">{{ rendered_value }}</div>
-        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Cycle-consistent projected revenue across 100,000 eligible accounts</div>
-        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +$0.19M (+3.1%) vs last month</div>
+        <div style="font-size:28px; font-weight:700; color:#111a35; margin:4px 0;">{{ rendered_value }}</div>
+        <div style="font-size:11.5px; color:#6b7794;">Cycle-consistent projected revenue across 100,000 eligible accounts</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57; margin-top:4px;">▲ +$0.19M (+3.1%) vs last month</div>
       </div>
     row: 2
     col: 16
@@ -161,21 +151,19 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    custom_color_enabled: true
-    custom_color: "#d98200"
     html: |
-      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+      <div style="font-family:'Segoe UI',sans-serif; padding:14px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">REVENUE VARIANCE</div>
-        <div style="font-size:28px; font-weight:700; color:#d98200; margin:6px 0;">{{ rendered_value }}</div>
-        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Invoice - Projected (negative = shortfall)</div>
-        <div style="font-size:11.5px; font-weight:600; color:#d98200;">▼ -$0.32K vs last month</div>
+        <div style="font-size:28px; font-weight:700; color:#d98200; margin:4px 0;">{{ rendered_value }}</div>
+        <div style="font-size:11.5px; color:#6b7794;">Invoice - Projected (negative = shortfall)</div>
+        <div style="font-size:11.5px; font-weight:600; color:#d98200; margin-top:4px;">▼ -$0.32K vs last month</div>
       </div>
     row: 2
     col: 20
     width: 4
     height: 4
 
-  # --- ROW 2: ACCOUNT BREAKDOWN TILES ---
+  # --- ROW 2: ACCOUNT KPIS ---
 
   - name: r_active
     type: single_value
@@ -186,14 +174,12 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    custom_color_enabled: true
-    custom_color: "#5b3df5"
     html: |
-      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+      <div style="font-family:'Segoe UI',sans-serif; padding:14px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">ACTIVE ACCOUNTS</div>
-        <div style="font-size:28px; font-weight:700; color:#5b3df5; margin:6px 0;">{{ rendered_value }}</div>
-        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">ACCOUNT_STATUS = ACTIVE</div>
-        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +2,826 (+3.1%) vs last month</div>
+        <div style="font-size:28px; font-weight:700; color:#5b3df5; margin:4px 0;">{{ rendered_value }}</div>
+        <div style="font-size:11.5px; color:#6b7794;">ACCOUNT_STATUS = ACTIVE</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57; margin-top:4px;">▲ +2,826 (+3.1%) vs last month</div>
       </div>
     row: 6
     col: 0
@@ -209,14 +195,12 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    custom_color_enabled: true
-    custom_color: "#111a35"
     html: |
-      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+      <div style="font-family:'Segoe UI',sans-serif; padding:14px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">SUSPENDED / PENDING</div>
-        <div style="font-size:28px; font-weight:700; color:#111a35; margin:6px 0;">{{ rendered_value }}</div>
-        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">SUSPENDED + ACTIVE_PENDING — billing-eligible</div>
-        <div style="font-size:11.5px; font-weight:600; color:#6b7794;">▲ +174 (+3.1%) vs last month</div>
+        <div style="font-size:28px; font-weight:700; color:#111a35; margin:4px 0;">{{ rendered_value }}</div>
+        <div style="font-size:11.5px; color:#6b7794;">SUSPENDED + ACTIVE_PENDING — billing-eligible</div>
+        <div style="font-size:11.5px; font-weight:600; color:#6b7794; margin-top:4px;">▲ +174 (+3.1%) vs last month</div>
       </div>
     row: 6
     col: 6
@@ -232,14 +216,12 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    custom_color_enabled: true
-    custom_color: "#0e9f57"
     html: |
-      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+      <div style="font-family:'Segoe UI',sans-serif; padding:14px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">ELIGIBLE ACCOUNTS</div>
-        <div style="font-size:28px; font-weight:700; color:#0e9f57; margin:6px 0;">{{ rendered_value }}</div>
-        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Active + Suspended / Pending</div>
-        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +3,000 (+3.1%) vs last month</div>
+        <div style="font-size:28px; font-weight:700; color:#0e9f57; margin:4px 0;">{{ rendered_value }}</div>
+        <div style="font-size:11.5px; color:#6b7794;">Active + Suspended / Pending</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57; margin-top:4px;">▲ +3,000 (+3.1%) vs last month</div>
       </div>
     row: 6
     col: 12
@@ -255,21 +237,19 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    custom_color_enabled: true
-    custom_color: "#111a35"
     html: |
-      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+      <div style="font-family:'Segoe UI',sans-serif; padding:14px; min-height:110px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">TERMINATED</div>
-        <div style="font-size:28px; font-weight:700; color:#111a35; margin:6px 0;">{{ rendered_value }}</div>
-        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Not billing-eligible</div>
-        <div style="font-size:11.5px; font-weight:600; color:#d98200;">▲ +77 (+11.8%) vs last month</div>
+        <div style="font-size:28px; font-weight:700; color:#111a35; margin:4px 0;">{{ rendered_value }}</div>
+        <div style="font-size:11.5px; color:#6b7794;">Not billing-eligible</div>
+        <div style="font-size:11.5px; font-weight:600; color:#d98200; margin-top:4px;">▲ +77 (+11.8%) vs last month</div>
       </div>
     row: 6
     col: 18
     width: 6
     height: 4
 
-  # --- ROW 3 & 4: TABLES & GRIDS ---
+  # --- GRIDS ---
 
   - name: r_mix
     title: Invoiced Revenue Mix (by revenue type)
