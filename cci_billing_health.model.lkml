@@ -1,4 +1,6 @@
 connection: "snowflake_sg"
+include: "/cci_billing_health_report.dashboard.lookml"
+include: "/cci_revenue_report.dashboard.lookml"
 
 # Static-data views: no database tables are read (SQL literals only).
 view: cci_billing_cycle {
