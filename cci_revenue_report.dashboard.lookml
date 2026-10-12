@@ -44,6 +44,10 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
+    single_value_title: TOTAL INVOICES
+    custom_color_enabled: true
+    custom_color: "#5b3df5"
+    enable_conditional_formatting: false
     row: 2
     col: 0
     width: 4
@@ -59,6 +63,10 @@
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: true
     show_comparison: false
+    single_value_title: TOTAL REVENUE
+    custom_color_enabled: true
+    custom_color: "#0e9f57"
+    enable_conditional_formatting: false
     row: 2
     col: 4
     width: 4
@@ -74,6 +82,10 @@
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: true
     show_comparison: false
+    single_value_title: WAIVERS
+    custom_color_enabled: true
+    custom_color: "#d98200"
+    enable_conditional_formatting: false
     row: 2
     col: 8
     width: 4
@@ -89,6 +101,10 @@
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: true
     show_comparison: false
+    single_value_title: INVOICE REVENUE
+    custom_color_enabled: true
+    custom_color: "#5b3df5"
+    enable_conditional_formatting: false
     row: 2
     col: 12
     width: 4
@@ -104,6 +120,10 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
+    single_value_title: PROJECTED REVENUE
+    custom_color_enabled: true
+    custom_color: "#111a35"
+    enable_conditional_formatting: false
     row: 2
     col: 16
     width: 4
@@ -119,6 +139,10 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
+    single_value_title: REVENUE VARIANCE
+    custom_color_enabled: true
+    custom_color: "#d98200"
+    enable_conditional_formatting: false
     row: 2
     col: 20
     width: 4
@@ -134,6 +158,10 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
+    single_value_title: ACTIVE ACCOUNTS
+    custom_color_enabled: true
+    custom_color: "#5b3df5"
+    enable_conditional_formatting: false
     row: 5
     col: 0
     width: 6
@@ -149,6 +177,10 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
+    single_value_title: SUSPENDED / PENDING
+    custom_color_enabled: true
+    custom_color: "#111a35"
+    enable_conditional_formatting: false
     row: 5
     col: 6
     width: 6
@@ -164,6 +196,10 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
+    single_value_title: ELIGIBLE ACCOUNTS
+    custom_color_enabled: true
+    custom_color: "#0e9f57"
+    enable_conditional_formatting: false
     row: 5
     col: 12
     width: 6
@@ -179,6 +215,10 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
+    single_value_title: TERMINATED
+    custom_color_enabled: true
+    custom_color: "#111a35"
+    enable_conditional_formatting: false
     row: 5
     col: 18
     width: 6
