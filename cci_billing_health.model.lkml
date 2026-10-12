@@ -2,6 +2,7 @@ connection: "snowflake_sg"
 include: "/cci_billing_health_report.dashboard.lookml"
 include: "/cci_revenue_report.dashboard.lookml"
 
+
 # Static-data views: no database tables are read (SQL literals only).
 view: cci_billing_cycle {
   derived_table: { sql:
@@ -22,24 +23,115 @@ view: cci_billing_cycle {
         SELECT '202609' AS billing_month, 'Cycle 2' AS cycle, 32970 AS active_accounts, 1330 AS suspended_accounts, 700 AS pending_accounts, 266 AS terminated_accounts, 34993 AS generated_bills, 7 AS ungenerated_accounts, 15 AS zero_bills, 6 AS negative_bills, 2259164.29 AS total_bill_amt, 44 AS run_minutes
         UNION ALL
         SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 31086 AS active_accounts, 1254 AS suspended_accounts, 660 AS pending_accounts, 250.8 AS terminated_accounts, 32994 AS generated_bills, 6 AS ungenerated_accounts, 12 AS zero_bills, 4 AS negative_bills, 2130069.19 AS total_bill_amt, 98 AS run_minutes ;; }
+
   dimension: billing_month { type: string sql: ${TABLE}.billing_month ;; }
   dimension: cycle { type: string sql: ${TABLE}.cycle ;; }
-  measure: total_bills { type: sum sql: ${TABLE}.generated_bills ;; value_format: "#,##0" }
-  measure: total_bill_amt { type: sum sql: ${TABLE}.total_bill_amt ;; value_format: "$#,##0.00" }
+
+  # ---- Billing Month selector + previous-month comparison
+  parameter: selected_month {
+    label: "Billing Month"
+    type: string
+    suggest_dimension: billing_month
+    default_value: "202609"
+  }
+
+  dimension: period_flag {
+    hidden: yes
+    type: string
+    sql: CASE
+           WHEN ${billing_month} = {% parameter selected_month %} THEN 'Current'
+           WHEN ${billing_month} = TO_CHAR(DATEADD(month, -1, TO_DATE({% parameter selected_month %}, 'YYYYMM')), 'YYYYMM') THEN 'Prior'
+         END ;;
+  }
+
+  # ---- CURRENT PERIOD MEASURES
+  measure: total_bills {
+    type: sum
+    filters: [period_flag: "Current"]
+    sql: ${TABLE}.generated_bills ;;
+    value_format: "#,##0"
+  }
+
+  measure: total_bill_amt {
+    type: sum
+    filters: [period_flag: "Current"]
+    sql: ${TABLE}.total_bill_amt ;;
+    value_format: "$#,##0.00"
+  }
+
+  measure: active {
+    type: sum
+    filters: [period_flag: "Current"]
+    sql: ${TABLE}.active_accounts ;;
+    value_format: "#,##0"
+  }
+
+  measure: susp_pending {
+    type: sum
+    filters: [period_flag: "Current"]
+    sql: ${TABLE}.suspended_accounts+${TABLE}.pending_accounts ;;
+    value_format: "#,##0"
+  }
+
+  measure: eligible {
+    type: sum
+    filters: [period_flag: "Current"]
+    sql: ${TABLE}.active_accounts+${TABLE}.suspended_accounts+${TABLE}.pending_accounts ;;
+    value_format: "#,##0"
+  }
+
+  measure: terminated {
+    type: sum
+    filters: [period_flag: "Current"]
+    sql: ${TABLE}.terminated_accounts ;;
+    value_format: "#,##0"
+  }
+
+  measure: zero_bills { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.zero_bills ;; }
+  measure: negative_bills { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.negative_bills ;; }
+  measure: ungenerated { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.ungenerated_accounts ;; }
+  measure: run_minutes { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.run_minutes ;; value_format: "0\" min\"" }
+
   measure: avg_bill { type: number sql: ${total_bill_amt}/NULLIF(${total_bills},0) ;; value_format: "$#,##0.00" }
-  measure: zero_bills { type: sum sql: ${TABLE}.zero_bills ;; }
-  measure: negative_bills { type: sum sql: ${TABLE}.negative_bills ;; }
-  measure: ungenerated { type: sum sql: ${TABLE}.ungenerated_accounts ;; }
-  measure: active { type: sum sql: ${TABLE}.active_accounts ;; value_format: "#,##0" }
-  measure: susp_pending { type: sum sql: ${TABLE}.suspended_accounts+${TABLE}.pending_accounts ;; value_format: "#,##0" }
-  measure: eligible { type: sum sql: ${TABLE}.active_accounts+${TABLE}.suspended_accounts+${TABLE}.pending_accounts ;; value_format: "#,##0" }
-  measure: terminated { type: sum sql: ${TABLE}.terminated_accounts ;; value_format: "#,##0" }
   measure: gen_rate { type: number sql: 100.0*${total_bills}/NULLIF(${eligible},0) ;; value_format: "0.000\"%\"" }
   measure: acceptance { type: string sql: CASE WHEN ${gen_rate}>=99.95 THEN 'PASS' ELSE 'FAIL' END ;; }
   measure: projected_revenue { type: number sql: ${total_bill_amt}/NULLIF(${total_bills},0)*${eligible} ;; value_format: "$#,##0.00,,\"M\"" }
   measure: revenue_variance { type: number sql: ${total_bill_amt}-${projected_revenue} ;; value_format: "$#,##0.00,\"K\"" }
-  measure: run_minutes { type: sum sql: ${TABLE}.run_minutes ;; value_format: "0\" min\"" }
+
+  # ---- PRIOR PERIOD baseline MEASURES (Month -1)
+  measure: total_bills_prior { type: sum filters: [period_flag: "Prior"] sql: ${TABLE}.generated_bills ;; }
+  measure: total_bill_amt_prior { type: sum filters: [period_flag: "Prior"] sql: ${TABLE}.total_bill_amt ;; }
+  measure: active_prior { type: sum filters: [period_flag: "Prior"] sql: ${TABLE}.active_accounts ;; }
+  measure: susp_pending_prior { type: sum filters: [period_flag: "Prior"] sql: ${TABLE}.suspended_accounts+${TABLE}.pending_accounts ;; }
+  measure: eligible_prior { type: sum filters: [period_flag: "Prior"] sql: ${TABLE}.active_accounts+${TABLE}.suspended_accounts+${TABLE}.pending_accounts ;; }
+  measure: terminated_prior { type: sum filters: [period_flag: "Prior"] sql: ${TABLE}.terminated_accounts ;; }
+
+  # ---- COMPARISON METRICS (DELTAS & PERCENTAGES)
+  measure: total_bills_change {
+    type: number
+    sql: ${total_bills} - ${total_bills_prior} ;;
+    value_format: "+#,##0;-#,##0;0"
+  }
+
+  measure: total_bills_pct_change {
+    type: number
+    sql: (${total_bills} - ${total_bills_prior}) / NULLIF(${total_bills_prior}, 0) ;;
+    value_format: "+0.0%;-0.0%;0.0%"
+  }
+
+  measure: active_change {
+    type: number
+    sql: ${active} - ${active_prior} ;;
+    value_format: "+#,##0;-#,##0;0"
+  }
+
+  measure: active_pct_change {
+    type: number
+    sql: (${active} - ${active_prior}) / NULLIF(${active_prior}, 0) ;;
+    value_format: "+0.0%;-0.0%;0.0%"
+  }
 }
+
 view: cci_ungenerated {
   derived_table: { sql:
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 'AC700126' AS account_id, 'SI9100234' AS si_number, 'Unlimited Plus 5G' AS rate_plan, 'ACTIVE' AS account_status, 'NONE' AS port_type, '—' AS porting_donor
@@ -149,6 +241,7 @@ view: cci_ungenerated {
         SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'AC702248' AS account_id, 'SI9102652' AS si_number, 'Unlimited Plus 5G' AS rate_plan, 'ACTIVE' AS account_status, 'NONE' AS port_type, '—' AS porting_donor
         UNION ALL
         SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'AC702285' AS account_id, 'SI9102765' AS si_number, 'Value 4G Plan' AS rate_plan, 'SUSPENDED' AS account_status, 'PORT_IN' AS port_type, 'Telco A' AS porting_donor ;; }
+
   dimension: billing_month { type: string sql: ${TABLE}.billing_month ;; }
   dimension: cycle { type: string sql: ${TABLE}.cycle ;; }
   dimension: account_id { type: string sql: ${TABLE}.account_id ;; }
@@ -158,6 +251,7 @@ view: cci_ungenerated {
   dimension: port_type { type: string sql: ${TABLE}.port_type ;; }
   dimension: porting_donor { type: string sql: ${TABLE}.porting_donor ;; }
 }
+
 view: cci_product_revenue {
   derived_table: { sql:
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 'Unlimited Plus 5G' AS product, 'RECURRING' AS revenue_type, 18451.2 AS line_items, 18451.2 AS qty, 896514.17 AS non_tax, 187488.1 AS tax_amt
@@ -303,20 +397,58 @@ view: cci_product_revenue {
         SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'Loyalty Waiver' AS product, 'DISCOUNT' AS revenue_type, 9933 AS line_items, 9933 AS qty, -49633.65 AS non_tax, 0 AS tax_amt
         UNION ALL
         SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'Promo Waiver' AS product, 'DISCOUNT' AS revenue_type, 2046 AS line_items, 2046 AS qty, -20460 AS non_tax, 0 AS tax_amt ;; }
+
   dimension: billing_month { type: string sql: ${TABLE}.billing_month ;; }
   dimension: cycle { type: string sql: ${TABLE}.cycle ;; }
   dimension: product { type: string sql: ${TABLE}.product ;; }
   dimension: revenue_type { type: string sql: ${TABLE}.revenue_type ;; }
-  measure: line_items { type: sum sql: ${TABLE}.line_items ;; value_format: "#,##0" }
-  measure: qty { type: sum sql: ${TABLE}.qty ;; value_format: "#,##0" }
-  measure: non_tax { type: sum sql: ${TABLE}.non_tax ;; value_format: "$#,##0.00" }
-  measure: tax_amt { type: sum sql: ${TABLE}.tax_amt ;; value_format: "$#,##0.00" }
+
+  # ---- Billing Month selector + previous-month comparison
+  parameter: selected_month {
+    label: "Billing Month"
+    type: string
+    suggest_dimension: billing_month
+    default_value: "202609"
+  }
+
+  dimension: period_flag {
+    hidden: yes
+    type: string
+    sql: CASE
+           WHEN ${billing_month} = {% parameter selected_month %} THEN 'Current'
+           WHEN ${billing_month} = TO_CHAR(DATEADD(month, -1, TO_DATE({% parameter selected_month %}, 'YYYYMM')), 'YYYYMM') THEN 'Prior'
+         END ;;
+  }
+
+  # ---- CURRENT PERIOD REVENUE
+  measure: non_tax { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.non_tax ;; value_format: "$#,##0.00" }
+  measure: tax_amt { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.tax_amt ;; value_format: "$#,##0.00" }
+  measure: line_items { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.line_items ;; value_format: "#,##0" }
+  measure: qty { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.qty ;; value_format: "#,##0" }
+
   measure: total_invoiced { type: number sql: ${non_tax}+${tax_amt} ;; value_format: "$#,##0.00" }
-  measure: total_revenue { type: sum sql: CASE WHEN ${TABLE}.revenue_type<>'DISCOUNT' THEN ${TABLE}.non_tax+${TABLE}.tax_amt ELSE 0 END ;; value_format: "$#,##0.00,,\"M\"" }
-  measure: waivers { type: sum sql: CASE WHEN ${TABLE}.revenue_type='DISCOUNT' THEN ${TABLE}.non_tax+${TABLE}.tax_amt ELSE 0 END ;; value_format: "$#,##0.00,,\"M\"" }
+  measure: total_revenue { type: sum filters: [period_flag: "Current"] sql: CASE WHEN ${TABLE}.revenue_type<>'DISCOUNT' THEN ${TABLE}.non_tax+${TABLE}.tax_amt ELSE 0 END ;; value_format: "$#,##0.00,,\"M\"" }
+  measure: waivers { type: sum filters: [period_flag: "Current"] sql: CASE WHEN ${TABLE}.revenue_type='DISCOUNT' THEN ${TABLE}.non_tax+${TABLE}.tax_amt ELSE 0 END ;; value_format: "$#,##0.00,,\"M\"" }
   measure: invoice_revenue_m { type: number sql: ${total_revenue}+${waivers} ;; value_format: "$#,##0.00,,\"M\"" }
-  measure: invoice_revenue { type: number sql: ${non_tax}+${tax_amt} ;; value_format: "$#,##0.00" }
+
+  # ---- PRIOR PERIOD REVENUE (Month -1)
+  measure: total_revenue_prior { type: sum filters: [period_flag: "Prior"] sql: CASE WHEN ${TABLE}.revenue_type<>'DISCOUNT' THEN ${TABLE}.non_tax+${TABLE}.tax_amt ELSE 0 END ;; }
+  measure: waivers_prior { type: sum filters: [period_flag: "Prior"] sql: CASE WHEN ${TABLE}.revenue_type='DISCOUNT' THEN ${TABLE}.non_tax+${TABLE}.tax_amt ELSE 0 END ;; }
+
+  # ---- REVENUE COMPARISON METRICS
+  measure: total_revenue_change {
+    type: number
+    sql: ${total_revenue} - ${total_revenue_prior} ;;
+    value_format: "$#,##0.00,,\"M\""
+  }
+
+  measure: total_revenue_pct_change {
+    type: number
+    sql: (${total_revenue} - ${total_revenue_prior}) / NULLIF(${total_revenue_prior}, 0) ;;
+    value_format: "+0.0%;-0.0%;0.0%"
+  }
 }
+
 view: cci_state_revenue {
   derived_table: { sql:
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 'CA' AS state, 112370.75 AS tax_amt, 557071.19 AS revenue
@@ -426,11 +558,30 @@ view: cci_state_revenue {
         SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'FL' AS state, 40051.5 AS tax_amt, 191706.23 AS revenue
         UNION ALL
         SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'Other / National' AS state, 62302.34 AS tax_amt, 319510.37 AS revenue ;; }
+
   dimension: billing_month { type: string sql: ${TABLE}.billing_month ;; }
   dimension: cycle { type: string sql: ${TABLE}.cycle ;; }
   dimension: state { type: string sql: ${TABLE}.state ;; }
-  measure: revenue { type: sum sql: ${TABLE}.revenue ;; value_format: "$#,##0.00" }
-  measure: tax_amt { type: sum sql: ${TABLE}.tax_amt ;; value_format: "$#,##0.00" }
+
+  # ---- Billing Month selector + previous-month comparison
+  parameter: selected_month {
+    label: "Billing Month"
+    type: string
+    suggest_dimension: billing_month
+    default_value: "202609"
+  }
+
+  dimension: period_flag {
+    hidden: yes
+    type: string
+    sql: CASE
+           WHEN ${billing_month} = {% parameter selected_month %} THEN 'Current'
+           WHEN ${billing_month} = TO_CHAR(DATEADD(month, -1, TO_DATE({% parameter selected_month %}, 'YYYYMM')), 'YYYYMM') THEN 'Prior'
+         END ;;
+  }
+
+  measure: revenue { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.revenue ;; value_format: "$#,##0.00" }
+  measure: tax_amt { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.tax_amt ;; value_format: "$#,##0.00" }
 }
 
 explore: cci_billing_cycle {}
