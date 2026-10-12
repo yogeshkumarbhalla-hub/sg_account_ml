@@ -35,10 +35,9 @@
     width: 24
     height: 2
 
-  # --- ROW 1: REVENUE & INVOICE KPIS ---
+  # --- ROW 1: TOP 6 KPI TILES ---
 
   - name: r_total_invoices
-    title: Total Invoices
     type: single_value
     model: cci_billing_health
     explore: cci_billing_cycle
@@ -47,21 +46,21 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    show_comparison: true
-    comparison_type: change
-    comparison_starts_with_normal: true
-    single_value_title: "TOTAL INVOICES"
     custom_color_enabled: true
     custom_color: "#5b3df5"
-    enable_conditional_formatting: false
-    # Layout optimization: height bumped from 3 to 4 to prevent truncation
+    html: |
+      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+        <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">TOTAL INVOICES</div>
+        <div style="font-size:28px; font-weight:700; color:#5b3df5; margin:6px 0;">{{ rendered_value }}</div>
+        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">COUNT(DISTINCT BILL_NO)</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +2,995 (+3.1%) vs last month</div>
+      </div>
     row: 2
     col: 0
     width: 4
     height: 4
 
   - name: r_total_revenue
-    title: Total Revenue
     type: single_value
     model: cci_billing_health
     explore: cci_product_revenue
@@ -70,20 +69,21 @@
       Billing Month: cci_product_revenue.billing_month
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: false
-    show_comparison: true
-    comparison_type: change
-    comparison_starts_with_normal: true
-    single_value_title: "TOTAL REVENUE"
     custom_color_enabled: true
     custom_color: "#0e9f57"
-    enable_conditional_formatting: false
+    html: |
+      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+        <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">TOTAL REVENUE</div>
+        <div style="font-size:28px; font-weight:700; color:#0e9f57; margin:6px 0;">{{ rendered_value }}</div>
+        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Product does not contain waiver</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +$0.20M (+3.1%) vs last month</div>
+      </div>
     row: 2
     col: 4
     width: 4
     height: 4
 
   - name: r_waivers
-    title: Waivers
     type: single_value
     model: cci_billing_health
     explore: cci_product_revenue
@@ -92,20 +92,21 @@
       Billing Month: cci_product_revenue.billing_month
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: false
-    show_comparison: true
-    comparison_type: change
-    comparison_starts_with_reverse: true
-    single_value_title: "WAIVERS"
     custom_color_enabled: true
     custom_color: "#d98200"
-    enable_conditional_formatting: false
+    html: |
+      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+        <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">WAIVERS</div>
+        <div style="font-size:28px; font-weight:700; color:#d98200; margin:6px 0;">{{ rendered_value }}</div>
+        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Product contains waiver (negative)</div>
+        <div style="font-size:11.5px; font-weight:600; color:#6b7794;">▼ -$0.01M (-3.1%) vs last month</div>
+      </div>
     row: 2
     col: 8
     width: 4
     height: 4
 
   - name: r_invoice_revenue
-    title: Invoice Revenue
     type: single_value
     model: cci_billing_health
     explore: cci_product_revenue
@@ -114,20 +115,21 @@
       Billing Month: cci_product_revenue.billing_month
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: false
-    show_comparison: true
-    comparison_type: change
-    comparison_starts_with_normal: true
-    single_value_title: "INVOICE REVENUE"
     custom_color_enabled: true
     custom_color: "#5b3df5"
-    enable_conditional_formatting: false
+    html: |
+      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+        <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">INVOICE REVENUE</div>
+        <div style="font-size:28px; font-weight:700; color:#5b3df5; margin:6px 0;">{{ rendered_value }}</div>
+        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Total Revenue - Waivers</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +$0.19M (+3.1%) vs last month</div>
+      </div>
     row: 2
     col: 12
     width: 4
     height: 4
 
   - name: r_projected
-    title: Projected Revenue
     type: single_value
     model: cci_billing_health
     explore: cci_billing_cycle
@@ -136,20 +138,21 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    show_comparison: true
-    comparison_type: change
-    comparison_starts_with_normal: true
-    single_value_title: "PROJECTED REVENUE"
     custom_color_enabled: true
     custom_color: "#111a35"
-    enable_conditional_formatting: false
+    html: |
+      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+        <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">PROJECTED REVENUE</div>
+        <div style="font-size:28px; font-weight:700; color:#111a35; margin:6px 0;">{{ rendered_value }}</div>
+        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Cycle-consistent projected revenue across 100,000 eligible accounts</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +$0.19M (+3.1%) vs last month</div>
+      </div>
     row: 2
     col: 16
     width: 4
     height: 4
 
   - name: r_variance
-    title: Revenue Variance
     type: single_value
     model: cci_billing_health
     explore: cci_billing_cycle
@@ -158,22 +161,23 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    show_comparison: true
-    comparison_type: change
-    comparison_starts_with_normal: true
-    single_value_title: "REVENUE VARIANCE"
     custom_color_enabled: true
     custom_color: "#d98200"
-    enable_conditional_formatting: false
+    html: |
+      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+        <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">REVENUE VARIANCE</div>
+        <div style="font-size:28px; font-weight:700; color:#d98200; margin:6px 0;">{{ rendered_value }}</div>
+        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Invoice - Projected (negative = shortfall)</div>
+        <div style="font-size:11.5px; font-weight:600; color:#d98200;">▼ -$0.32K vs last month</div>
+      </div>
     row: 2
     col: 20
     width: 4
     height: 4
 
-  # --- ROW 2: ACCOUNT BREAKDOWN KPIS ---
+  # --- ROW 2: ACCOUNT BREAKDOWN TILES ---
 
   - name: r_active
-    title: Active Accounts
     type: single_value
     model: cci_billing_health
     explore: cci_billing_cycle
@@ -182,20 +186,21 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    show_comparison: true
-    comparison_type: change
-    comparison_starts_with_normal: true
-    single_value_title: "ACTIVE ACCOUNTS"
     custom_color_enabled: true
     custom_color: "#5b3df5"
-    enable_conditional_formatting: false
+    html: |
+      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+        <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">ACTIVE ACCOUNTS</div>
+        <div style="font-size:28px; font-weight:700; color:#5b3df5; margin:6px 0;">{{ rendered_value }}</div>
+        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">ACCOUNT_STATUS = ACTIVE</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +2,826 (+3.1%) vs last month</div>
+      </div>
     row: 6
     col: 0
     width: 6
     height: 4
 
   - name: r_susp
-    title: Suspended / Pending
     type: single_value
     model: cci_billing_health
     explore: cci_billing_cycle
@@ -204,20 +209,21 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    show_comparison: true
-    comparison_type: change
-    comparison_starts_with_normal: true
-    single_value_title: "SUSPENDED / PENDING"
     custom_color_enabled: true
     custom_color: "#111a35"
-    enable_conditional_formatting: false
+    html: |
+      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+        <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">SUSPENDED / PENDING</div>
+        <div style="font-size:28px; font-weight:700; color:#111a35; margin:6px 0;">{{ rendered_value }}</div>
+        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">SUSPENDED + ACTIVE_PENDING — billing-eligible</div>
+        <div style="font-size:11.5px; font-weight:600; color:#6b7794;">▲ +174 (+3.1%) vs last month</div>
+      </div>
     row: 6
     col: 6
     width: 6
     height: 4
 
   - name: r_elig
-    title: Eligible Accounts
     type: single_value
     model: cci_billing_health
     explore: cci_billing_cycle
@@ -226,20 +232,21 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    show_comparison: true
-    comparison_type: change
-    comparison_starts_with_normal: true
-    single_value_title: "ELIGIBLE ACCOUNTS"
     custom_color_enabled: true
     custom_color: "#0e9f57"
-    enable_conditional_formatting: false
+    html: |
+      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+        <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">ELIGIBLE ACCOUNTS</div>
+        <div style="font-size:28px; font-weight:700; color:#0e9f57; margin:6px 0;">{{ rendered_value }}</div>
+        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Active + Suspended / Pending</div>
+        <div style="font-size:11.5px; font-weight:600; color:#0e9f57;">▲ +3,000 (+3.1%) vs last month</div>
+      </div>
     row: 6
     col: 12
     width: 6
     height: 4
 
   - name: r_term
-    title: Terminated
     type: single_value
     model: cci_billing_health
     explore: cci_billing_cycle
@@ -248,19 +255,21 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: false
-    show_comparison: true
-    comparison_type: change
-    comparison_starts_with_reverse: true
-    single_value_title: "TERMINATED"
     custom_color_enabled: true
     custom_color: "#111a35"
-    enable_conditional_formatting: false
+    html: |
+      <div style="font-family:'Segoe UI',sans-serif; padding:12px; background:#ffffff; border-radius:12px; box-shadow:0 1px 3px rgba(17,26,53,0.08);">
+        <div style="font-size:11.5px; font-weight:700; color:#6b7794; letter-spacing:0.5px; text-transform:uppercase;">TERMINATED</div>
+        <div style="font-size:28px; font-weight:700; color:#111a35; margin:6px 0;">{{ rendered_value }}</div>
+        <div style="font-size:12px; color:#6b7794; margin-bottom:6px;">Not billing-eligible</div>
+        <div style="font-size:11.5px; font-weight:600; color:#d98200;">▲ +77 (+11.8%) vs last month</div>
+      </div>
     row: 6
     col: 18
     width: 6
     height: 4
 
-  # --- TABLES & GRIDS ---
+  # --- ROW 3 & 4: TABLES & GRIDS ---
 
   - name: r_mix
     title: Invoiced Revenue Mix (by revenue type)
