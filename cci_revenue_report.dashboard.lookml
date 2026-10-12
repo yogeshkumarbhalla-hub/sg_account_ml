@@ -40,7 +40,7 @@
     type: text
     title_text: ''
     body_text: |
-      <div style="font-family:'Segoe UI',system-ui,sans-serif; margin-bottom: 4px;">
+      <div style="font-family:'Segoe UI',system-ui,sans-serif; margin-bottom:0px;">
         <h1 style="margin:0; font-size:22px; color:#111a35; font-weight:700;">Revenue Dashboard</h1>
         <nav style="display:flex; gap:6px; margin:16px 0 12px; border-bottom:1px solid #dfe4ee;">
           <a href="/dashboards/cci_billing_health::cci_revenue_report" style="padding:9px 16px; color:#5b3df5; text-decoration:none; font-weight:600; border-bottom:3px solid #5b3df5;">Revenue Dashboard</a>
@@ -334,9 +334,9 @@
     limit_displayed_rows: false
     series_labels:
       cci_product_revenue.revenue_type: Component
-      cci_product_revenue.non_tax: Non-Tax Amount
-      cci_product_revenue.tax_amt: Tax Amount
-      cci_product_revenue.total_invoiced: Total Invoiced
+      cci_product_revenue.non_tax: Amount
+      cci_product_revenue.tax_amt: Tax
+      cci_product_revenue.total_invoiced: Share
     series_text_format:
       cci_product_revenue.non_tax:
         align: right
@@ -354,8 +354,8 @@
     type: looker_grid
     model: cci_billing_health
     explore: cci_state_revenue
-    fields: [cci_state_revenue.state, cci_state_revenue.revenue, cci_state_revenue.tax_amt]
-    sorts: [cci_state_revenue.revenue desc]
+    fields: [cci_state_revenue.state, cci_state_revenue.total_revenue, cci_state_revenue.tax_amt]
+    sorts: [cci_state_revenue.total_revenue desc]
     filters:
       cci_state_revenue.period_flag: Current
     listen:
@@ -375,15 +375,15 @@
     limit_displayed_rows: false
     series_labels:
       cci_state_revenue.state: State
-      cci_state_revenue.revenue: Revenue
+      cci_state_revenue.total_revenue: Revenue
       cci_state_revenue.tax_amt: Tax Amount
     series_text_format:
-      cci_state_revenue.revenue:
+      cci_state_revenue.total_revenue:
         align: right
       cci_state_revenue.tax_amt:
         align: right
     series_cell_visualizations:
-      cci_state_revenue.revenue:
+      cci_state_revenue.total_revenue:
         is_active: true
         palette:
           palette_id: custom

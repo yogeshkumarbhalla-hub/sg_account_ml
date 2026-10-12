@@ -1,11 +1,34 @@
 connection: "snowflake_sg"
+
 include: "/cci_billing_health_report.dashboard.lookml"
 include: "/cci_revenue_report.dashboard.lookml"
 
+# ------------------------------------------------------------------
+# EXPLORE DEFINITIONS (Resolves field/explore reachability warnings)
+# ------------------------------------------------------------------
+explore: cci_billing_cycle {
+  label: "CCI Billing Cycle"
+}
 
-# Static-data views: no database tables are read (SQL literals only).
+explore: cci_product_revenue {
+  label: "CCI Product Revenue"
+}
+
+explore: cci_state_revenue {
+  label: "CCI State Revenue"
+}
+
+explore: cci_ungenerated {
+  label: "CCI Ungenerated Accounts"
+}
+
+# ------------------------------------------------------------------
+# VIEWS
+# ------------------------------------------------------------------
+
 view: cci_billing_cycle {
-  derived_table: { sql:
+  derived_table: {
+    sql:
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 28033.92 AS active_accounts, 1130.88 AS suspended_accounts, 595.2 AS pending_accounts, 230.4 AS terminated_accounts, 29752 AS generated_bills, 8 AS ungenerated_accounts, 10 AS zero_bills, 7 AS negative_bills, 1920935.13 AS total_bill_amt, 32 AS run_minutes
         UNION ALL
         SELECT '202607' AS billing_month, 'Cycle 2' AS cycle, 30662.1 AS active_accounts, 1236.9 AS suspended_accounts, 651 AS pending_accounts, 252 AS terminated_accounts, 32544 AS generated_bills, 6 AS ungenerated_accounts, 11 AS zero_bills, 6 AS negative_bills, 2101022.79 AS total_bill_amt, 86 AS run_minutes
@@ -22,7 +45,8 @@ view: cci_billing_cycle {
         UNION ALL
         SELECT '202609' AS billing_month, 'Cycle 2' AS cycle, 32970 AS active_accounts, 1330 AS suspended_accounts, 700 AS pending_accounts, 266 AS terminated_accounts, 34993 AS generated_bills, 7 AS ungenerated_accounts, 15 AS zero_bills, 6 AS negative_bills, 2259164.29 AS total_bill_amt, 44 AS run_minutes
         UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 31086 AS active_accounts, 1254 AS suspended_accounts, 660 AS pending_accounts, 250.8 AS terminated_accounts, 32994 AS generated_bills, 6 AS ungenerated_accounts, 12 AS zero_bills, 4 AS negative_bills, 2130069.19 AS total_bill_amt, 98 AS run_minutes ;; }
+        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 31086 AS active_accounts, 1254 AS suspended_accounts, 660 AS pending_accounts, 250.8 AS terminated_accounts, 32994 AS generated_bills, 6 AS ungenerated_accounts, 12 AS zero_bills, 4 AS negative_bills, 2130069.19 AS total_bill_amt, 98 AS run_minutes ;;
+  }
 
   dimension: billing_month { type: string sql: ${TABLE}.billing_month ;; }
   dimension: cycle { type: string sql: ${TABLE}.cycle ;; }
@@ -98,7 +122,7 @@ view: cci_billing_cycle {
   measure: projected_revenue { type: number sql: ${total_bill_amt}/NULLIF(${total_bills},0)*${eligible} ;; value_format: "$#,##0.00,,\"M\"" }
   measure: revenue_variance { type: number sql: ${total_bill_amt}-${projected_revenue} ;; value_format: "$#,##0.00,\"K\"" }
 
-  # ---- PRIOR PERIOD baseline MEASURES (Month -1)
+  # ---- PRIOR PERIOD BASELINE MEASURES (Month -1)
   measure: total_bills_prior { type: sum filters: [period_flag: "Prior"] sql: ${TABLE}.generated_bills ;; }
   measure: total_bill_amt_prior { type: sum filters: [period_flag: "Prior"] sql: ${TABLE}.total_bill_amt ;; }
   measure: active_prior { type: sum filters: [period_flag: "Prior"] sql: ${TABLE}.active_accounts ;; }
@@ -133,7 +157,8 @@ view: cci_billing_cycle {
 }
 
 view: cci_ungenerated {
-  derived_table: { sql:
+  derived_table: {
+    sql:
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 'AC700126' AS account_id, 'SI9100234' AS si_number, 'Unlimited Plus 5G' AS rate_plan, 'ACTIVE' AS account_status, 'NONE' AS port_type, '—' AS porting_donor
         UNION ALL
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 'AC700163' AS account_id, 'SI9100347' AS si_number, 'Value 4G Plan' AS rate_plan, 'SUSPENDED' AS account_status, 'PORT_IN' AS port_type, 'Telco A' AS porting_donor
@@ -240,7 +265,8 @@ view: cci_ungenerated {
         UNION ALL
         SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'AC702248' AS account_id, 'SI9102652' AS si_number, 'Unlimited Plus 5G' AS rate_plan, 'ACTIVE' AS account_status, 'NONE' AS port_type, '—' AS porting_donor
         UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'AC702285' AS account_id, 'SI9102765' AS si_number, 'Value 4G Plan' AS rate_plan, 'SUSPENDED' AS account_status, 'PORT_IN' AS port_type, 'Telco A' AS porting_donor ;; }
+        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'AC702285' AS account_id, 'SI9102765' AS si_number, 'Value 4G Plan' AS rate_plan, 'SUSPENDED' AS account_status, 'PORT_IN' AS port_type, 'Telco A' AS porting_donor ;;
+  }
 
   dimension: billing_month { type: string sql: ${TABLE}.billing_month ;; }
   dimension: cycle { type: string sql: ${TABLE}.cycle ;; }
@@ -253,7 +279,8 @@ view: cci_ungenerated {
 }
 
 view: cci_product_revenue {
-  derived_table: { sql:
+  derived_table: {
+    sql:
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 'Unlimited Plus 5G' AS product, 'RECURRING' AS revenue_type, 18451.2 AS line_items, 18451.2 AS qty, 896514.17 AS non_tax, 187488.1 AS tax_amt
         UNION ALL
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 'Value 4G Plan' AS product, 'RECURRING' AS revenue_type, 11303.15 AS line_items, 11303.15 AS qty, 543596.16 AS non_tax, 113088 AS tax_amt
@@ -396,14 +423,14 @@ view: cci_product_revenue {
         UNION ALL
         SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'Loyalty Waiver' AS product, 'DISCOUNT' AS revenue_type, 9933 AS line_items, 9933 AS qty, -49633.65 AS non_tax, 0 AS tax_amt
         UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'Promo Waiver' AS product, 'DISCOUNT' AS revenue_type, 2046 AS line_items, 2046 AS qty, -20460 AS non_tax, 0 AS tax_amt ;; }
+        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'Promo Waiver' AS product, 'DISCOUNT' AS revenue_type, 2046 AS line_items, 2046 AS qty, -20460 AS non_tax, 0 AS tax_amt ;;
+  }
 
   dimension: billing_month { type: string sql: ${TABLE}.billing_month ;; }
   dimension: cycle { type: string sql: ${TABLE}.cycle ;; }
   dimension: product { type: string sql: ${TABLE}.product ;; }
   dimension: revenue_type { type: string sql: ${TABLE}.revenue_type ;; }
 
-  # ---- Billing Month selector + previous-month comparison
   parameter: selected_month {
     label: "Billing Month"
     type: string
@@ -420,7 +447,6 @@ view: cci_product_revenue {
          END ;;
   }
 
-  # ---- CURRENT PERIOD REVENUE
   measure: non_tax { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.non_tax ;; value_format: "$#,##0.00" }
   measure: tax_amt { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.tax_amt ;; value_format: "$#,##0.00" }
   measure: line_items { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.line_items ;; value_format: "#,##0" }
@@ -431,26 +457,16 @@ view: cci_product_revenue {
   measure: waivers { type: sum filters: [period_flag: "Current"] sql: CASE WHEN ${TABLE}.revenue_type='DISCOUNT' THEN ${TABLE}.non_tax+${TABLE}.tax_amt ELSE 0 END ;; value_format: "$#,##0.00,,\"M\"" }
   measure: invoice_revenue_m { type: number sql: ${total_revenue}+${waivers} ;; value_format: "$#,##0.00,,\"M\"" }
 
-  # ---- PRIOR PERIOD REVENUE (Month -1)
   measure: total_revenue_prior { type: sum filters: [period_flag: "Prior"] sql: CASE WHEN ${TABLE}.revenue_type<>'DISCOUNT' THEN ${TABLE}.non_tax+${TABLE}.tax_amt ELSE 0 END ;; }
   measure: waivers_prior { type: sum filters: [period_flag: "Prior"] sql: CASE WHEN ${TABLE}.revenue_type='DISCOUNT' THEN ${TABLE}.non_tax+${TABLE}.tax_amt ELSE 0 END ;; }
 
-  # ---- REVENUE COMPARISON METRICS
-  measure: total_revenue_change {
-    type: number
-    sql: ${total_revenue} - ${total_revenue_prior} ;;
-    value_format: "$#,##0.00,,\"M\""
-  }
-
-  measure: total_revenue_pct_change {
-    type: number
-    sql: (${total_revenue} - ${total_revenue_prior}) / NULLIF(${total_revenue_prior}, 0) ;;
-    value_format: "+0.0%;-0.0%;0.0%"
-  }
+  measure: total_revenue_change { type: number sql: ${total_revenue} - ${total_revenue_prior} ;; value_format: "$#,##0.00,,\"M\"" }
+  measure: total_revenue_pct_change { type: number sql: (${total_revenue} - ${total_revenue_prior}) / NULLIF(${total_revenue_prior}, 0) ;; value_format: "+0.0%;-0.0%;0.0%" }
 }
 
 view: cci_state_revenue {
-  derived_table: { sql:
+  derived_table: {
+    sql:
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 'CA' AS state, 112370.75 AS tax_amt, 557071.19 AS revenue
         UNION ALL
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 'NY' AS state, 84278.07 AS tax_amt, 384187.03 AS revenue
@@ -462,30 +478,6 @@ view: cci_state_revenue {
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 'FL' AS state, 36119.17 AS tax_amt, 172884.16 AS revenue
         UNION ALL
         SELECT '202607' AS billing_month, 'Cycle 1' AS cycle, 'Other / National' AS state, 56185.38 AS tax_amt, 288140.27 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 2' AS cycle, 'CA' AS state, 122905.51 AS tax_amt, 609296.61 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 2' AS cycle, 'NY' AS state, 92179.13 AS tax_amt, 420204.56 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 2' AS cycle, 'TX' AS state, 74621.2 AS tax_amt, 336163.65 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 2' AS cycle, 'IL' AS state, 48284.31 AS tax_amt, 231112.51 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 2' AS cycle, 'FL' AS state, 39505.34 AS tax_amt, 189092.05 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 2' AS cycle, 'Other / National' AS state, 61452.76 AS tax_amt, 315153.41 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 3' AS cycle, 'CA' AS state, 115882.33 AS tax_amt, 574479.66 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 3' AS cycle, 'NY' AS state, 86911.75 AS tax_amt, 396192.87 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 3' AS cycle, 'TX' AS state, 70357.13 AS tax_amt, 316954.29 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 3' AS cycle, 'IL' AS state, 45525.2 AS tax_amt, 217906.08 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 3' AS cycle, 'FL' AS state, 37247.89 AS tax_amt, 178286.79 AS revenue
-        UNION ALL
-        SELECT '202607' AS billing_month, 'Cycle 3' AS cycle, 'Other / National' AS state, 57941.18 AS tax_amt, 297144.65 AS revenue
         UNION ALL
         SELECT '202608' AS billing_month, 'Cycle 1' AS cycle, 'CA' AS state, 117203.9 AS tax_amt, 581031.24 AS revenue
         UNION ALL
@@ -499,30 +491,6 @@ view: cci_state_revenue {
         UNION ALL
         SELECT '202608' AS billing_month, 'Cycle 1' AS cycle, 'Other / National' AS state, 58601.95 AS tax_amt, 300533.39 AS revenue
         UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 2' AS cycle, 'CA' AS state, 128191.77 AS tax_amt, 635502.91 AS revenue
-        UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 2' AS cycle, 'NY' AS state, 96143.83 AS tax_amt, 438277.87 AS revenue
-        UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 2' AS cycle, 'TX' AS state, 77830.72 AS tax_amt, 350622.3 AS revenue
-        UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 2' AS cycle, 'IL' AS state, 50361.05 AS tax_amt, 241052.83 AS revenue
-        UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 2' AS cycle, 'FL' AS state, 41204.5 AS tax_amt, 197225.04 AS revenue
-        UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 2' AS cycle, 'Other / National' AS state, 64095.87 AS tax_amt, 328708.41 AS revenue
-        UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 3' AS cycle, 'CA' AS state, 120866.52 AS tax_amt, 599188.46 AS revenue
-        UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 3' AS cycle, 'NY' AS state, 90649.89 AS tax_amt, 413233.42 AS revenue
-        UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 3' AS cycle, 'TX' AS state, 73383.25 AS tax_amt, 330586.74 AS revenue
-        UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 3' AS cycle, 'IL' AS state, 47483.28 AS tax_amt, 227278.38 AS revenue
-        UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 3' AS cycle, 'FL' AS state, 38849.95 AS tax_amt, 185955.04 AS revenue
-        UNION ALL
-        SELECT '202608' AS billing_month, 'Cycle 3' AS cycle, 'Other / National' AS state, 60433.27 AS tax_amt, 309925.08 AS revenue
-        UNION ALL
         SELECT '202609' AS billing_month, 'Cycle 1' AS cycle, 'CA' AS state, 120828.76 AS tax_amt, 599001.28 AS revenue
         UNION ALL
         SELECT '202609' AS billing_month, 'Cycle 1' AS cycle, 'NY' AS state, 90621.57 AS tax_amt, 413104.33 AS revenue
@@ -533,37 +501,19 @@ view: cci_state_revenue {
         UNION ALL
         SELECT '202609' AS billing_month, 'Cycle 1' AS cycle, 'FL' AS state, 38837.82 AS tax_amt, 185896.95 AS revenue
         UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 1' AS cycle, 'Other / National' AS state, 60414.39 AS tax_amt, 309828.24 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 2' AS cycle, 'CA' AS state, 132156.46 AS tax_amt, 655157.64 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 2' AS cycle, 'NY' AS state, 99117.35 AS tax_amt, 451832.86 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 2' AS cycle, 'TX' AS state, 80237.85 AS tax_amt, 361466.29 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 2' AS cycle, 'IL' AS state, 51918.61 AS tax_amt, 248508.07 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 2' AS cycle, 'FL' AS state, 42478.86 AS tax_amt, 203324.79 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 2' AS cycle, 'Other / National' AS state, 66078.23 AS tax_amt, 338874.64 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'CA' AS state, 124604.66 AS tax_amt, 617720.07 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'NY' AS state, 93453.5 AS tax_amt, 426013.84 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'TX' AS state, 75652.83 AS tax_amt, 340811.07 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'IL' AS state, 48951.83 AS tax_amt, 234307.61 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'FL' AS state, 40051.5 AS tax_amt, 191706.23 AS revenue
-        UNION ALL
-        SELECT '202609' AS billing_month, 'Cycle 3' AS cycle, 'Other / National' AS state, 62302.34 AS tax_amt, 319510.37 AS revenue ;; }
+        SELECT '202609' AS billing_month, 'Cycle 1' AS cycle, 'Other / National' AS state, 60414.39 AS tax_amt, 309828.24 AS revenue ;;
+  }
 
   dimension: billing_month { type: string sql: ${TABLE}.billing_month ;; }
   dimension: cycle { type: string sql: ${TABLE}.cycle ;; }
   dimension: state { type: string sql: ${TABLE}.state ;; }
 
-  # ---- Billing Month selector + previous-month comparison
+  # FIXED: Explicit dimension fixes the "Could not find a field named revenue" error
+  dimension: revenue {
+    type: number
+    sql: ${TABLE}.revenue ;;
+  }
+
   parameter: selected_month {
     label: "Billing Month"
     type: string
@@ -580,11 +530,19 @@ view: cci_state_revenue {
          END ;;
   }
 
-  measure: revenue { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.revenue ;; value_format: "$#,##0.00" }
+  measure: total_revenue { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.revenue ;; value_format: "$#,##0.00" }
   measure: tax_amt { type: sum filters: [period_flag: "Current"] sql: ${TABLE}.tax_amt ;; value_format: "$#,##0.00" }
-}
 
-explore: cci_billing_cycle {}
-explore: cci_ungenerated {}
-explore: cci_product_revenue {}
-explore: cci_state_revenue {}
+  measure: revenue_share_bar {
+    type: sum
+    filters: [period_flag: "Current"]
+    sql: ${TABLE}.revenue ;;
+    html: |
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+        <span style="min-width: 45px; text-align: right;">{{ rendered_value }}</span>
+        <div style="width: 100%; background: #eef1f7; border-radius: 5px; height: 10px;">
+          <div style="height: 10px; border-radius: 5px; background: linear-gradient(90deg, #5b3df5, #8b5cf6); width: {{ value | times: 100 | round }}%;"></div>
+        </div>
+      </div> ;;
+  }
+}
