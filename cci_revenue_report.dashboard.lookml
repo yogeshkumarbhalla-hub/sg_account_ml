@@ -24,6 +24,7 @@
     model: cci_billing_health
     explore: cci_billing_cycle
     field: cci_billing_cycle.cycle
+
   elements:
   - name: open_html_version
     type: text
@@ -33,6 +34,7 @@
     col: 0
     width: 24
     height: 2
+
   - name: r_total_invoices
     title: Total Invoices
     type: single_value
@@ -43,7 +45,9 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
-    show_comparison: false
+    show_comparison: true
+    comparison_type: change
+    comparison_starts_with_normal: true
     single_value_title: TOTAL INVOICES
     custom_color_enabled: true
     custom_color: "#5b3df5"
@@ -52,6 +56,7 @@
     col: 0
     width: 4
     height: 3
+
   - name: r_total_revenue
     title: Total Revenue
     type: single_value
@@ -62,7 +67,9 @@
       Billing Month: cci_product_revenue.billing_month
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: true
-    show_comparison: false
+    show_comparison: true
+    comparison_type: change
+    comparison_starts_with_normal: true
     single_value_title: TOTAL REVENUE
     custom_color_enabled: true
     custom_color: "#0e9f57"
@@ -71,6 +78,7 @@
     col: 4
     width: 4
     height: 3
+
   - name: r_waivers
     title: Waivers
     type: single_value
@@ -81,7 +89,9 @@
       Billing Month: cci_product_revenue.billing_month
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: true
-    show_comparison: false
+    show_comparison: true
+    comparison_type: change
+    comparison_starts_with_normal: true
     single_value_title: WAIVERS
     custom_color_enabled: true
     custom_color: "#d98200"
@@ -90,6 +100,7 @@
     col: 8
     width: 4
     height: 3
+
   - name: r_invoice_revenue
     title: Invoice Revenue
     type: single_value
@@ -100,7 +111,9 @@
       Billing Month: cci_product_revenue.billing_month
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: true
-    show_comparison: false
+    show_comparison: true
+    comparison_type: change
+    comparison_starts_with_normal: true
     single_value_title: INVOICE REVENUE
     custom_color_enabled: true
     custom_color: "#5b3df5"
@@ -109,6 +122,7 @@
     col: 12
     width: 4
     height: 3
+
   - name: r_projected
     title: Projected Revenue
     type: single_value
@@ -119,7 +133,9 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
-    show_comparison: false
+    show_comparison: true
+    comparison_type: change
+    comparison_starts_with_normal: true
     single_value_title: PROJECTED REVENUE
     custom_color_enabled: true
     custom_color: "#111a35"
@@ -128,6 +144,7 @@
     col: 16
     width: 4
     height: 3
+
   - name: r_variance
     title: Revenue Variance
     type: single_value
@@ -138,7 +155,9 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
-    show_comparison: false
+    show_comparison: true
+    comparison_type: change
+    comparison_starts_with_normal: true
     single_value_title: REVENUE VARIANCE
     custom_color_enabled: true
     custom_color: "#d98200"
@@ -147,6 +166,7 @@
     col: 20
     width: 4
     height: 3
+
   - name: r_active
     title: Active Accounts
     type: single_value
@@ -157,7 +177,9 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
-    show_comparison: false
+    show_comparison: true
+    comparison_type: change
+    comparison_starts_with_normal: true
     single_value_title: ACTIVE ACCOUNTS
     custom_color_enabled: true
     custom_color: "#5b3df5"
@@ -166,6 +188,7 @@
     col: 0
     width: 6
     height: 3
+
   - name: r_susp
     title: Suspended / Pending
     type: single_value
@@ -176,7 +199,9 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
-    show_comparison: false
+    show_comparison: true
+    comparison_type: change
+    comparison_starts_with_normal: true
     single_value_title: SUSPENDED / PENDING
     custom_color_enabled: true
     custom_color: "#111a35"
@@ -185,6 +210,7 @@
     col: 6
     width: 6
     height: 3
+
   - name: r_elig
     title: Eligible Accounts
     type: single_value
@@ -195,7 +221,9 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
-    show_comparison: false
+    show_comparison: true
+    comparison_type: change
+    comparison_starts_with_normal: true
     single_value_title: ELIGIBLE ACCOUNTS
     custom_color_enabled: true
     custom_color: "#0e9f57"
@@ -204,6 +232,7 @@
     col: 12
     width: 6
     height: 3
+
   - name: r_term
     title: Terminated
     type: single_value
@@ -214,7 +243,9 @@
       Billing Month: cci_billing_cycle.billing_month
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
-    show_comparison: false
+    show_comparison: true
+    comparison_type: change
+    comparison_starts_with_normal: true
     single_value_title: TERMINATED
     custom_color_enabled: true
     custom_color: "#111a35"
@@ -223,6 +254,7 @@
     col: 18
     width: 6
     height: 3
+
   - name: r_mix
     title: Invoiced Revenue Mix (by revenue type)
     type: looker_grid
@@ -238,6 +270,7 @@
     col: 0
     width: 12
     height: 7
+
   - name: r_state
     title: Jurisdictional Breakdown (US)
     type: looker_grid
@@ -253,6 +286,7 @@
     col: 12
     width: 12
     height: 7
+
   - name: r_product
     title: Product Revenue Summary
     type: looker_grid
