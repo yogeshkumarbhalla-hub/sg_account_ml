@@ -28,7 +28,7 @@
   - name: open_html_version
     type: text
     title_text: ''
-    body_text: '**[Open the full interactive Revenue dashboard (exact layout)](https://report.traceana.com/Revenue_Dashboard.html)**  |  [Billing Cycle Health dashboard](https://report.traceana.com/Billing_Dashboard.html)'
+    body_text: '<div style="border-bottom:1px solid #dfe4ee;padding:0"><a href="/dashboards/cci_billing_health::cci_revenue_report" style="display:inline-block;padding:9px 18px;margin-right:6px;font:600 14px Segoe UI,Arial,sans-serif;text-decoration:none;border-bottom:3px solid #5b3df5;color:#5b3df5">Revenue Dashboard</a><a href="/dashboards/cci_billing_health::cci_billing_health_report" style="display:inline-block;padding:9px 18px;margin-right:6px;font:600 14px Segoe UI,Arial,sans-serif;text-decoration:none;border-bottom:3px solid transparent;color:#6b7794">Billing Cycle Health</a></div>'
     row: 0
     col: 0
     width: 24
