@@ -1,3 +1,4 @@
+# link_tiles_marker
 - dashboard: cci_revenue_report
   title: Revenue Dashboard
   layout: newspaper
@@ -24,6 +25,14 @@
     explore: cci_billing_cycle
     field: cci_billing_cycle.cycle
   elements:
+  - name: open_html_version
+    type: text
+    title_text: ''
+    body_text: '**[Open the full interactive Revenue dashboard (exact layout)](https://report.traceana.com/Revenue_Dashboard.html)**  |  [Billing Cycle Health dashboard](https://report.traceana.com/Billing_Dashboard.html)'
+    row: 0
+    col: 0
+    width: 24
+    height: 2
   - name: r_total_invoices
     title: Total Invoices
     type: single_value
@@ -35,7 +44,7 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
-    row: 0
+    row: 2
     col: 0
     width: 4
     height: 3
@@ -50,7 +59,7 @@
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: true
     show_comparison: false
-    row: 0
+    row: 2
     col: 4
     width: 4
     height: 3
@@ -65,7 +74,7 @@
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: true
     show_comparison: false
-    row: 0
+    row: 2
     col: 8
     width: 4
     height: 3
@@ -80,7 +89,7 @@
       Billing Cycle: cci_product_revenue.cycle
     show_single_value_title: true
     show_comparison: false
-    row: 0
+    row: 2
     col: 12
     width: 4
     height: 3
@@ -95,7 +104,7 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
-    row: 0
+    row: 2
     col: 16
     width: 4
     height: 3
@@ -110,7 +119,7 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
-    row: 0
+    row: 2
     col: 20
     width: 4
     height: 3
@@ -125,7 +134,7 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
-    row: 3
+    row: 5
     col: 0
     width: 6
     height: 3
@@ -140,7 +149,7 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
-    row: 3
+    row: 5
     col: 6
     width: 6
     height: 3
@@ -155,7 +164,7 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
-    row: 3
+    row: 5
     col: 12
     width: 6
     height: 3
@@ -170,7 +179,7 @@
       Billing Cycle: cci_billing_cycle.cycle
     show_single_value_title: true
     show_comparison: false
-    row: 3
+    row: 5
     col: 18
     width: 6
     height: 3
@@ -185,7 +194,7 @@
       Billing Month: cci_product_revenue.billing_month
       Billing Cycle: cci_product_revenue.cycle
     show_row_numbers: false
-    row: 6
+    row: 8
     col: 0
     width: 12
     height: 7
@@ -200,7 +209,7 @@
       Billing Month: cci_state_revenue.billing_month
       Billing Cycle: cci_state_revenue.cycle
     show_row_numbers: false
-    row: 6
+    row: 8
     col: 12
     width: 12
     height: 7
@@ -214,7 +223,7 @@
       Billing Month: cci_product_revenue.billing_month
       Billing Cycle: cci_product_revenue.cycle
     show_row_numbers: false
-    row: 13
+    row: 15
     col: 0
     width: 24
     height: 9
