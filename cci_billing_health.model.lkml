@@ -427,7 +427,6 @@ view: cci_state_revenue {
   measure: revenue { type: sum sql: ${TABLE}.revenue ;; value_format: "$#,##0.00" }
   measure: tax_amt { type: sum sql: ${TABLE}.tax_amt ;; value_format: "$#,##0.00" }
 }
-
 explore: cci_billing_cycle {}
 explore: cci_ungenerated {}
 explore: cci_product_revenue {}
