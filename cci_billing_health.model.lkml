@@ -1,6 +1,4 @@
-connection: "snowflake_sg"   # <- set your connection name
-# include: "/**/*.view.lkml"
-# include: "/**/*.dashboard.lookml"
+connection: "snowflake_sg"
 
 # Static-data views: no database tables are read (SQL literals only).
 view: cci_billing_cycle {
@@ -36,6 +34,8 @@ view: cci_billing_cycle {
   measure: terminated { type: sum sql: ${TABLE}.terminated_accounts ;; value_format: "#,##0" }
   measure: gen_rate { type: number sql: 100.0*${total_bills}/NULLIF(${eligible},0) ;; value_format: "0.000\"%\"" }
   measure: acceptance { type: string sql: CASE WHEN ${gen_rate}>=99.95 THEN 'PASS' ELSE 'FAIL' END ;; }
+  measure: projected_revenue { type: number sql: ${total_bill_amt}/NULLIF(${total_bills},0)*${eligible} ;; value_format: "$#,##0.00,,\"M\"" }
+  measure: revenue_variance { type: number sql: ${total_bill_amt}-${projected_revenue} ;; value_format: "$#,##0.00,\"K\"" }
   measure: run_minutes { type: sum sql: ${TABLE}.run_minutes ;; value_format: "0\" min\"" }
 }
 view: cci_ungenerated {
@@ -310,6 +310,9 @@ view: cci_product_revenue {
   measure: non_tax { type: sum sql: ${TABLE}.non_tax ;; value_format: "$#,##0.00" }
   measure: tax_amt { type: sum sql: ${TABLE}.tax_amt ;; value_format: "$#,##0.00" }
   measure: total_invoiced { type: number sql: ${non_tax}+${tax_amt} ;; value_format: "$#,##0.00" }
+  measure: total_revenue { type: sum sql: CASE WHEN ${TABLE}.revenue_type<>'DISCOUNT' THEN ${TABLE}.non_tax+${TABLE}.tax_amt ELSE 0 END ;; value_format: "$#,##0.00,,\"M\"" }
+  measure: waivers { type: sum sql: CASE WHEN ${TABLE}.revenue_type='DISCOUNT' THEN ${TABLE}.non_tax+${TABLE}.tax_amt ELSE 0 END ;; value_format: "$#,##0.00,,\"M\"" }
+  measure: invoice_revenue_m { type: number sql: ${total_revenue}+${waivers} ;; value_format: "$#,##0.00,,\"M\"" }
   measure: invoice_revenue { type: number sql: ${non_tax}+${tax_amt} ;; value_format: "$#,##0.00" }
 }
 view: cci_state_revenue {
@@ -427,6 +430,7 @@ view: cci_state_revenue {
   measure: revenue { type: sum sql: ${TABLE}.revenue ;; value_format: "$#,##0.00" }
   measure: tax_amt { type: sum sql: ${TABLE}.tax_amt ;; value_format: "$#,##0.00" }
 }
+
 explore: cci_billing_cycle {}
 explore: cci_ungenerated {}
 explore: cci_product_revenue {}
